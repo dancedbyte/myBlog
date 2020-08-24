@@ -4,6 +4,9 @@
     <list default="true" id="4121181a-b17c-477b-b0e2-0463a19b832f" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/themes/TKL/source/img/hipanda.png" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/themes/TKL/source/img/new_bg.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/_posts/hello-world.md" beforeDir="false" afterPath="$PROJECT_DIR$/source/_posts/leetcode/subjects.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/themes/TKL" beforeDir="false" afterPath="$PROJECT_DIR$/themes/TKL" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/themes/TKL/_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/themes/TKL/_config.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/themes/TKL/layout/_partial/after_all.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/themes/TKL/layout/_partial/after_all.ejs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/themes/TKL/layout/_partial/footer.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/themes/TKL/layout/_partial/footer.ejs" afterDir="false" />
@@ -16,7 +19,8 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/themes/TKL" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="ProjectId" id="1fg7NReNYYfP4IA9YVsPRwcb4bU" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -65,7 +69,7 @@
       <workItem from="1596767723218" duration="550000" />
       <workItem from="1596885041172" duration="2314000" />
       <workItem from="1597047042968" duration="356000" />
-      <workItem from="1598240537063" duration="385000" />
+      <workItem from="1598240537063" duration="749000" />
     </task>
     <servers />
   </component>
@@ -73,10 +77,22 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="434" y="127" key="CommitChangelistDialog2" timestamp="1598241082128">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="434" y="127" key="CommitChangelistDialog2/0.0.1680.1050/-1920.0.1920.1080@0.0.1680.1050" timestamp="1598241082128" />
+    <state x="440" y="265" key="Vcs.Push.Dialog.v2" timestamp="1598241350148">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="440" y="265" key="Vcs.Push.Dialog.v2/0.0.1680.1050/-1920.0.1920.1080@0.0.1680.1050" timestamp="1598241350148" />
     <state x="100" y="100" width="1480" height="850" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1596681160736">
       <screen x="0" y="23" width="1680" height="965" />
     </state>
     <state x="100" y="100" width="1480" height="850" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1680.965/-1920.23.1920.1057@0.23.1680.965" timestamp="1596681160736" />
+    <state x="629" y="449" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1598241333075">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="629" y="449" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1680.1050/-1920.0.1920.1080@0.0.1680.1050" timestamp="1598241333075" />
     <state x="506" y="282" width="667" height="486" key="find.popup" timestamp="1597026108676">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
