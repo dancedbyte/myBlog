@@ -20,6 +20,18 @@ categories: JavaScript
 13. 替换空格
 14. 有一堆整数，把他们分成3份，并确保每一份的和 尽量相等
 15. 获取翻转数组中的最小值
+16. 给定一个数据列表（可转成树），把数据打印成有缩进的数据结果
+17. 扑克牌中的顺子
+18. 0～n-1中缺失的数字
+19. 排序多个有序数组
+20. 将正整数数组中所有数字拼起来拼成一个数，找到所有可能拼接数字中最小的一个
+21. 输入一个链表，输出链表的倒数第k个节点。
+22. 获取两个链表的第一个交点
+23. 寻找两数之和，输出一种情况即可。
+24. 给定整数数组，奇数靠前，偶数靠后。
+25. 给定二叉树和sum，判读是否存在某条路径的和为sum。
+26. 复制复杂链表（每个节点有 next(指向下一个) 和 random(指向任意一个或null) 两个指针）
+27. 合并两个递增排序的链表，要求合并后的链表也保持递增顺序。
 
 ## 无重复字符的最长子串
 利用滑动窗格思想，如果当前要累加的字符已经在之前的字符串中存在，则从索引位置向后截取。
@@ -513,4 +525,401 @@ const findMin1 = (arr) => {
 
 const res = findMin1(arr);
 console.log(res);
+```
+
+## 
+
+## 给定一个数据列表，把数据打印成有缩进的数据结果
+先将parentId类型的结构转化成树，在利用二叉树深度优先遍历输出结果。
+```js
+const arr = [
+  { id: 1001, parentId: 0, name: 'AA' },
+  { id: 1002, parentId: 1001, name: 'BB' },
+  { id: 1003, parentId: 1001, name: 'CC' },
+  { id: 1004, parentId: 1003, name: 'DD' },
+  { id: 1005, parentId: 1003, name: 'EE' },
+  { id: 1006, parentId: 1002, name: 'FF' },
+  { id: 1007, parentId: 1002, name: 'GG' },
+  { id: 1008, parentId: 1004, name: 'HH' },
+  { id: 1009, parentId: 1005, name: 'II' },
+];
+const toTree = (arr) => {
+  const idObj = {};
+  const res = [];
+  arr.forEach(it => idObj[it.id] = it);
+  
+  for(const it in idObj) {
+    const cur = idObj[it];
+    if(cur.parentId) {
+      if(idObj[cur.parentId].children) {
+        idObj[cur.parentId].children.push(cur);
+      } else {
+       	idObj[cur.parentId].children = [cur];
+      }
+    } else {
+      res.push(cur);
+    }
+  }
+  
+  const dfs = (root, empty) => {
+  	console.log(empty +  root.name);  
+    root.children && root.children.forEach(it => dfs(it, empty + '  '));
+  }
+  
+  dfs(res[0], '');
+  
+  /*
+    AA
+        BB
+            FF
+            GG
+        CC
+            DD
+                HH
+            EE
+                II
+  */    
+};
+toTree(arr);
+```
+
+## 
+
+## 扑克牌中的顺子
+从扑克牌中随机抽5张牌，判断是不是一个顺子，即这5张牌是不是连续的。2～10为数字本身，A为1，J为11，Q为12，K为13，而大、小王为 0 ，可以看成任意数字。A 不能视为 14。
+
+记得考虑 4张2 等这种情况
+```js
+const isStraight = function (nums) {
+    let a = 0, b = 0;
+    nums.sort((a, b) => a - b);
+    
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] == 0) {
+            a++;
+        } else {
+            if (nums[i + 1] - nums[i] > 1) {
+                b += nums[i + 1] - nums[i] - 1
+            } else if (nums[i + 1] == nums[i]){
+                return false;
+            }
+        }
+    }
+    return a >= b ? true : false;
+};
+```
+
+## 
+
+## 0～n-1中缺失的数字
+数组规律，递增，并且每个数字都在范围0～n-1之内，且只有一个数字不在该数组中。
+
+输入[0,1,2,3,4,5,6,7,9] ，输出8
+```js
+const missingNumber = (arr) => {
+    let left = 0;
+    let right = arr.length - 1;
+    
+    while(left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        
+        if(arr[mid] === mid) {
+            left = mid + 1; // 缺失元素在右面
+        } else {
+            right = mid - 1; // 缺失元素在左面
+        }
+    }
+    
+    return left;
+};
+```
+
+## 
+
+## 排序多个有序数组
+利用归并排序的思路。
+```js
+function merge(arr){
+  if(!arr.length) return;
+  if(arr.length === 1) return arr[0];
+
+  const child = arr.splice(0,1)[0];
+  const res = [];
+  let i = 0, j = 0;
+  
+  arr = merge(arr); 
+   
+  while(i < child.length && j < arr.length) {
+    if(child[i] < arr[j]) {
+     	res.push(child[i++]); 
+    } else if (child[i] > arr[j]){
+      res.push(arr[j++]);
+    } else {
+      res.push(child[i++]);
+      res.push(arr[j++]);
+    }
+  }
+  
+  while(i < child.length) res.push(child[i++]);
+  while(j < arr.length) res.push(arr[j++]);
+
+  return res;
+}
+
+console.log(merge([[1,1,2,3,12], [8,8,9,10], [-1,0,3,5]]))
+```
+
+## 
+
+## 将正整数数组中所有数字拼起来拼成一个数，找到所有可能拼接数字中最小的一个
+```js
+const arr1 = [10, 100];
+const arr2 = [297, 10, 25, 11, 68, 2788, 10000];
+const arr3 = [3, 25]; // 253
+const arr4 = [3, 52]; // 352
+const arr5 = [1, 2, 10];
+
+// 方式1
+const findMin = (arr) => {
+  // 按位数去比较
+  const sortFunc = (a, b) => {
+    let i = 0;
+    const strA = a.toString();
+    const strB = b.toString();
+    const len = Math.min(strA.length, strB.length);
+    let isAllSame = true;
+    
+    while(i < len) {
+      if(strA[i] === strB[i]) {
+      	i++;  
+      } else {
+        isAllSame = false; // 正常情况下肯定会进入else
+        return strA[i] - strB[i];
+      }
+    }
+    
+    // 避免[10, 100]这种情况，应将[10, 100] => [100 ,10]
+    if(isAllSame) return strB - strA;
+  }
+    
+  arr.sort(sortFunc);
+	console.log(arr); // [10000, 11, 25, 2788, 297, 68]
+  
+  return arr.join('')
+};
+
+const res = findMin(arr5);
+
+// 方式2
+const findMin = (nums) => nums.sort((a, b) => ('' + a + b) - ('' + b + a));
+```
+
+## 
+
+## 输入一个链表，输出链表的倒数第k个节点
+定义两个指针p和q，p先走k步，然后p,q一起走，直到p为null。最后的q即为倒数第k个节点。
+```js
+const findK = (head, k) => {
+    let p = head, q = head;
+
+    let i = 0;
+    while (p) {
+        if (i >= k) q = q.next;
+        
+        p = p.next;
+        i++;
+    }
+    
+    return i < k ? null : q;
+};
+```
+
+## 
+
+## 获取两个链表的第一个交点
+遍历得到两个链表的长度，以此来得到长度差diff。
+
+将慢指针 slow 指向较长链表，快指针 fast 指向较短链表。
+
+slow 先向前移动 diff 个距离。
+
+slow 和 fast 同时向前移动，每次移动一个距离，若存在公共节点，那么它们一定会遇上。
+
+```js
+const findX = (l1, l2) => {
+  const p1 = l1;
+  const p2 = l2;
+  const showLength = (p) => {
+    let len = 0;
+   	while(p) {
+      len++;
+    	p = p.next;
+  	} 
+    return len;
+  }
+  const len1 = showLength(p1);
+  const len2 = showLength(p2);
+  
+  if(!len1 || !len2) return null;
+  
+  let diff = Math.abs(len1 - len2);
+  let slow = len1 > len2 ? l1 : l2;
+  let fast = len1 > len2 ? l2 : l1;
+  
+  while(diff--) {
+    slow = slow.next;
+  }
+  
+  while(slow !== fast) {
+    slow = slow.next;
+    fast = fast.next;
+  }
+  
+  return slow
+};
+```
+
+## 
+
+## 寻找两数之和，输出一种情况即可
+通过字典记录差值。
+```js
+const findTwoSum = (arr, n) => {
+  const map = new Map();
+  
+  for(let i = 0; i < arr.length; i++) {
+    if(map.has(arr[i])) {
+      return [map.get(arr[i]), arr[i]];
+    } else {
+     	map.set(n - arr[i], arr[i]); // [[7, 2]]
+    }
+  }
+  
+  return [];
+};
+
+const res = findTwoSum([2, 7, 11, 15], 9);
+console.log(res);
+```
+
+## 给定整数数组，奇数靠前，偶数靠后。
+利用双指针，向中间聚合。
+```js
+const arr = [2, 4, 3, 7, 7, 9, 8];
+const arr1 = [2, 1];
+const arr2 = [1, 2, 3, 4, 5, 7];
+const arr3 = [2, 1, 4];
+
+const change = (arr) => {
+  let i = 0, j = arr.length - 1;
+  
+  while(i < j) {
+    if(arr[i] % 2 === 0) {
+      if(arr[j] % 2 === 1) {
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      } else {
+        while(arr[j] % 2 === 0 && j > i) {
+         	j--; 
+        }
+       	[arr[i], arr[j]] = [arr[j], arr[i]]; 
+      }
+    }
+    
+    i++;
+  }
+  
+  console.log(arr);
+};
+
+change(arr3);
+```
+
+## 
+
+## 给定二叉树和sum，判读是否存在某条路径的和为sum
+利用先序遍历。
+```js
+const findList = (root, sum) => {
+  const res = [];
+
+  const preLoader = (root, curSum, path) => {
+    if(!root) return;
+
+    curSum += root.val;
+    path = path.concat(root.val);
+
+    // 避免 root => [1, 2], sum = 1 这种情况
+    if(!root.left && !root.right && curSum === sum) {
+      res.push(path);
+    }
+
+    preLoader(root.left, curSum, path);
+    preLoader(root.right, curSum, path);
+  }
+
+  preLoader(root, 0, []);
+
+  console.log(res); // 所有路径
+
+  return !!res.length;
+}
+```
+
+## 
+
+## 复制复杂链表
+每个节点有 next(指向下一个) 和 random(指向任意一个或null) 两个指针。利用深拷贝的思路，map记录node节点。
+```js
+const copyList = (head) => {
+  if(!head) return null;
+  
+  const map = new Map();
+  const copy = (node) => {
+    if(!node) return null;
+    
+    if(map.has(node)) return map.get(node);
+    
+    const res = new NodeList();
+    map.set(node, res);
+    
+    res.val = node.val;
+    res.next = copy(node.next);
+    res.random = copy(node.random);
+    
+    return res;
+  };
+  
+  return copy(head);
+};
+```
+
+## 
+
+## 合并两个递增排序的链表，要求合并后的链表也保持递增顺序
+```js
+const mergeLink = (l1, l2) => {
+  if(!l1) return l2;
+  if(!l2) return l1;
+
+  const l = new ListNode();
+  let p = l;
+
+  while(l1 && l2) {
+    // 不需要区分 l1.val === l2.val 的情况。因为指针会自动向下遍历
+    if(l1.val <= l2.val) {
+      p.next = l1;
+      l1 = l1.next;
+    } else {
+      p.next = l2;
+      l2 = l2.next;
+    };
+
+    p = p.next;
+  }
+
+  if(l1) p.next = l1;
+  if(l2) p.next = l2;
+
+  return l.next;
+}
 ```
