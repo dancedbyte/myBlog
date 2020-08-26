@@ -32,6 +32,8 @@ categories: JavaScript
 25. 给定二叉树和sum，判读是否存在某条路径的和为sum。
 26. 复制复杂链表（每个节点有 next(指向下一个) 和 random(指向任意一个或null) 两个指针）
 27. 合并两个递增排序的链表，要求合并后的链表也保持递增顺序。
+28. 数组移动0。将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序
+29. 传入整型数组arr和数字n，按照与n的最近的规律（即绝对值）排序元素。
 
 ## 无重复字符的最长子串
 利用滑动窗格思想，如果当前要累加的字符已经在之前的字符串中存在，则从索引位置向后截取。
@@ -922,4 +924,48 @@ const mergeLink = (l1, l2) => {
 
   return l.next;
 }
+```
+
+## 
+
+## 数组移动 0
+给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+```js
+// 双指针 
+const moveZero = (nums) => {
+    let j = 0;
+    
+    for(let i = 0; i < nums.length; i++){
+        if(nums[i] !== 0){
+            [nums[i], nums[j]] = [nums[j], nums[i]];
+            j++;
+        }
+    }
+    
+    return nums;
+}
+
+console.log(fn2([0,1,0,3,0,7]))  //  [1,3,7,0,0,0]
+```
+
+## 
+
+## 传入整型数组arr和数字n，按照与n的最近的规律（即绝对值）排序元素
+```js
+const arr = [7, 28, -1, 0, 7, 33];
+
+const sortFunc = (arr, n) => {
+  const map = new Map();
+  
+  arr.forEach((it, idx) => {
+    map.set(idx, Math.abs(it - n));
+  })
+  
+  const res = [...map];
+  res.sort((a, b) => a[1] - b[1]);
+  
+  return res.map(it => arr[it[0]]);
+};
+
+console.log(sortFunc(arr, 5)); // [7, 7, 0, -1, 28, 33]
 ```
