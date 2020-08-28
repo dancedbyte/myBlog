@@ -34,6 +34,8 @@ categories: JavaScript
 27. 合并两个递增排序的链表，要求合并后的链表也保持递增顺序。
 28. 数组移动0。将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序
 29. 传入整型数组arr和数字n，按照与n的最近的规律（即绝对值）排序元素。
+30. 给定target，求和为target的连续正整数序列
+31. 给定正整数 n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回可以获得的最大乘积
 
 ## 无重复字符的最长子串
 利用滑动窗格思想，如果当前要累加的字符已经在之前的字符串中存在，则从索引位置向后截取。
@@ -454,15 +456,18 @@ console.log(res);
 ## 有一堆整数，把他们分成3份，并确保每一份的和 尽量相等
 ```js
 const arr = [11, 42, 23, 4, 5, 6, 4, 5, 6, 11, 23, 42, 56, 78, 90];
+const arr1 = [18, 19, 17, 12, 16, 15, 2, 1];
+const arr2 = [30, 10, 8, 2, 10];
+
 const showSplit = (arr, n) => {
   arr.sort((a, b) => b - a);
 
   const sum = arr.reduce((a, b) => a + b);
   const res = [];
-  
   const startSplit = (arr, n) => {
-    let startNum = 0;
+    let start = 0;
     const eachArr = [];
+    const avSum = Math.ceil(sum / n); // 33
     
     // 表示已经累计到最后一组 则直接push剩下的。
     if(res.length === n - 1) {
@@ -470,15 +475,18 @@ const showSplit = (arr, n) => {
       return res;
     }
     
-    arr.forEach((it, idx) => {
-        // 均分n份
-    	if(it + startNum <= Math.ceil(sum / n)) {
-            startNum += it;
-            eachArr.push(...arr.splice(idx, 1)); // splice改变数组
-        }
-    })
-    
-    console.log(startNum, 'startNum');
+    for(let i = 0; i < arr.length; i++) {
+      // 如果当前元素大于平均值 不再向下计算。
+      if(arr[i] > avSum) {
+        eachArr.push(...arr.splice(i, 1));
+        break;
+      }
+      if(start + arr[i] <= avSum) {
+        start += arr[i];
+		eachArr.push(...arr.splice(i, 1));
+      }
+    }
+
     res.push(eachArr);
     startSplit(arr, n)
   };
@@ -486,9 +494,7 @@ const showSplit = (arr, n) => {
   startSplit(arr, n);
   return res;
 };
-
-const res = showSplit(arr, 3);
-console.log(res);
+console.log(showSplit(arr2, 3));
 ```
 
 ## 
@@ -968,4 +974,64 @@ const sortFunc = (arr, n) => {
 };
 
 console.log(sortFunc(arr, 5)); // [7, 7, 0, -1, 28, 33]
+```
+
+## 
+
+## 给定target，求和为target的连续正整数序列
+如target = 9; 输出 [ [2, 3, 4], [4, 5] ]
+```js
+const find = (target) => {
+  if(!target) return [];
+  
+  const mid = Math.ceil(target / 2); 
+  const arr = Array(mid).fill().map((it, idx) => idx + 1);
+  const res = [];
+  let i = 0; // 记录索引
+  
+  while(i < mid - 1) {
+    let next = i + 1;
+    let curSum = arr[i] + arr[next];
+    
+    while(curSum <= target) {
+      if(curSum === target) {
+        res.push(arr.slice(i, next + 1));
+      }
+      next++;
+      curSum += arr[next];
+    }
+
+    i++;
+  }
+  
+  console.log(res);
+};
+
+find(15);
+```
+
+## 
+
+## 给定正整数 n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回可以获得的最大乘积
+如果n=5，则可以拆分成1和4，4又可以拆分成1和3，向下遍历，直到全为1。
+
+参考leetcode 343题。
+
+<img alt="pic" src='http://note.youdao.com/yws/res/9248/WEBRESOURCEc0f4588002afeef3f94ec041b1299c1e' width=400 />
+
+```js
+const integerBreak = (n) => {
+    const memo = new Array(n + 1); // 对计算结果进行缓存
+    
+    const dfs = (n) => {
+        if (memo[n]) return memo[n];
+        let res = 0;
+        for (let i = 1; i <= n - 1; i++) {
+            res = Math.max(res, i * (n - i), i * dfs(n - i));
+        }
+        memo[n] = res;
+        return memo[n];
+    };
+    return dfs(n);
+};
 ```
