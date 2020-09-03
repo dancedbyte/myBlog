@@ -36,6 +36,8 @@ categories: JavaScript
 29. 传入整型数组arr和数字n，按照与n的最近的规律（即绝对值）排序元素。
 30. 给定target，求和为target的连续正整数序列
 31. 给定正整数 n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回可以获得的最大乘积
+32. 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null
+33. 给定两个字符串，判断他们是否是同构的。
 
 ## 无重复字符的最长子串
 利用滑动窗格思想，如果当前要累加的字符已经在之前的字符串中存在，则从索引位置向后截取。
@@ -1034,4 +1036,63 @@ const integerBreak = (n) => {
     };
     return dfs(n);
 };
+```
+
+##
+
+## 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null
+定义快慢指针。
+```js
+const findNode = function (head) {
+    let slowP = head, fastP = head; // 都从头节点出发
+
+    while (fastP) {                // head就是null了，没有入环点，直接返回null
+        if (fastP.next == null) return null; // fastP.next为null也说明无环
+        
+        slowP = slowP.next;           // 慢指针走一步
+        fastP = fastP.next.next;      // 快指针走两步
+        
+        if (slowP === fastP) {        // 首次相遇
+            fastP = head;               // 让快指针回到头节点
+            while (true) {             // 开启循环，让快慢指针相遇
+                if (slowP === fastP) {    // 相遇，地点发生在入环处
+                    return slowP;           // 返回出指针的位置
+                }
+                fastP = fastP.next;       // 快慢指针都走一步
+                slowP = slowP.next;
+            }
+        }
+    }
+    return null;
+};
+```
+
+##
+
+## 给定两个字符串，判断他们是否是同构的
+如果s中的字符可以被替换得到t，并且所有出现的字符都必须被同一个字符替换才行，且保留字符出现的顺序。
+
+如 'egg' 和 'add' -> true
+
+如 'foo' 和 'bar' -> false
+
+如 'paper' 和 'title' -> true
+```js
+const judge = (s, t) => {
+  const map = new Map();
+  
+  for(let i = 0; i < s.length; i++) {
+    const key = s[i];
+    const val = t[i];
+    
+    if(map.has(key)) {
+      if(map.get(key) !== val) return false;
+    } else {
+      map.set(key, val)
+    }
+  }
+  
+  return true;
+};
+judge('paper', 'title');
 ```
