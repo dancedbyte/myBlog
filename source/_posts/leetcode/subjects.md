@@ -38,6 +38,8 @@ categories: JavaScript
 31. 给定正整数 n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回可以获得的最大乘积
 32. 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null
 33. 给定两个字符串，判断他们是否是同构的。
+34. 给定排序数组，原地删除数组元素。
+35. 给定IP地址列表，请排序。
 
 ## 无重复字符的最长子串
 利用滑动窗格思想，如果当前要累加的字符已经在之前的字符串中存在，则从索引位置向后截取。
@@ -1095,4 +1097,55 @@ const judge = (s, t) => {
   return true;
 };
 judge('paper', 'title');
+```
+
+##
+
+## 给定排序数组，原地删除数组元素
+给定数组nums[1, 1, 2]。需要返回数字2，并且数组的前两个元素被修改为1和2。
+```js
+const arr = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4];
+
+const remove = (arr) => {
+  let num = 0;
+  
+  for(let i = 1; i < arr.length; i++) {
+    if(arr[i] !== arr[num]) {
+      arr[++num] = arr[i]
+    }
+  }
+  
+  arr.splice(0, num + 1)
+  
+  return num + 1;
+}
+console.log(remove(arr)); // 5
+console.log(arr); // [0, 1, 2, 3, 4, 2, 2, 3, 3, 4] 前5个元素被修改为[0, 1, 2, 3, 4]
+```
+
+##
+
+## 给定ip地址列表并排序
+```js
+const demo = ['1.0.0', '1.0.0', '2.12.1', '2.12.3', '1.2.3.4.5', '0.18.1'];
+const deal = (demo) => {
+	demo.sort((a, b) => {
+    const arr = a.split('.');
+    const brr = b.split('.');
+    
+    let i = 0;
+    while(i < arr.length && i < brr.length) {
+      if(Number(arr[i]) === Number(brr[i])) {
+        i++;
+      } else {
+        return Number(arr[i]) - Number(brr[i]);
+      }
+    }
+  })
+  
+  return demo;
+};
+
+const res = deal(demo);
+console.log(res);
 ```
