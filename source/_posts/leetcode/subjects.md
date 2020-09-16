@@ -40,6 +40,7 @@ categories: JavaScript
 33. 给定两个字符串，判断他们是否是同构的。
 34. 给定排序数组，原地删除数组元素。
 35. 给定IP地址列表，请排序。
+36. 给定一维整数数组，返回二维数组，其中每个小数组长度为3并且之和为0.
 
 ## 无重复字符的最长子串
 利用滑动窗格思想，如果当前要累加的字符已经在之前的字符串中存在，则从索引位置向后截取。
@@ -1148,4 +1149,43 @@ const deal = (demo) => {
 
 const res = deal(demo);
 console.log(res);
+```
+
+##
+
+## 给定一维整数数组，返回二维数组，其中每个小数组长度为3并且之和为0
+```js
+const sumZero = (arr) => {
+  arr.sort((a, b) => a - b);
+  const len = arr.length;
+  const res = [];
+  
+  for(let i = 0; i < len - 2, arr[i] <= 0; i++) {
+    if(arr[i] === arr[i - 1]) continue;
+    
+    let left = i + 1, 
+        right = len - 1,
+        target = 0 - arr[i];
+    
+    while(left < right) {
+      const sum = arr[left] + arr[right];
+      
+      if(sum > target) {
+       	right--; 
+      } else if (sum < target) {
+        left++;
+      } else {
+        res.push([ arr[left], arr[i], arr[right] ]);
+        
+        while(arr[left] === arr[left + 1]) left++; // 跳过重复的
+        while(arr[right] === arr[right - 1]) right--; // 跳过重复的
+
+        left++;
+        right--;
+      }
+    }
+  }
+  console.log(res); // [ [-1, -1, 2], [0, -1, 1] ]
+}
+sumZero([1, 0, -1, 1, 2, -1, -4]);
 ```
