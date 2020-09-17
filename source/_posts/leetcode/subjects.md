@@ -40,7 +40,9 @@ categories: JavaScript
 33. 给定两个字符串，判断他们是否是同构的。
 34. 给定排序数组，原地删除数组元素。
 35. 给定IP地址列表，请排序。
-36. 给定一维整数数组，返回二维数组，其中每个小数组长度为3并且之和为0.
+36. 给定一维整数数组，返回二维数组，其中每个小数组长度为3并且之和为0。
+37. 合并两个有序数组nums1、nums2到nums1中，使nums1成为一个有序数组。
+
 
 ## 无重复字符的最长子串
 利用滑动窗格思想，如果当前要累加的字符已经在之前的字符串中存在，则从索引位置向后截取。
@@ -1188,4 +1190,26 @@ const sumZero = (arr) => {
   console.log(res); // [ [-1, -1, 2], [0, -1, 1] ]
 }
 sumZero([1, 0, -1, 1, 2, -1, -4]);
+```
+
+##
+
+## 合并两个有序数组nums1、nums2到nums1中，使nums1成为一个有序数组。
+```js
+const nums1 = [1, 2, 10];
+const nums2 = [2, 3, 7, 8, 11];
+
+const mergeToOne = (nums1, nums2) => {
+  let l1 = nums1.length - 1;
+  let l2 = nums2.length - 1;
+  let len = nums1.length + nums2.length - 1;
+
+  while (l1 >= 0 && l2 >= 0) {
+    nums1[len--] = nums1[l1] > nums2[l2] ? nums1[l1--] : nums2[l2--];
+  }
+  
+  return nums1;
+};
+const res = mergeToOne(nums1, nums2);
+console.log(res); // [1, 2, 2, 3, 7, 8, 10, 11]
 ```
