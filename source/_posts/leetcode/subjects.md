@@ -42,6 +42,8 @@ categories: JavaScript
 35. 给定IP地址列表，请排序。
 36. 给定一维整数数组，返回二维数组，其中每个小数组长度为3并且之和为0。
 37. 合并两个有序数组nums1、nums2到nums1中，使nums1成为一个有序数组。
+38. 判断一个数 n 是不是快乐数。
+39. 给定整数数组，找出和最大的子数组，子数组最少有一个元素。
 
 
 ## 无重复字符的最长子串
@@ -1212,4 +1214,64 @@ const mergeToOne = (nums1, nums2) => {
 };
 const res = mergeToOne(nums1, nums2);
 console.log(res); // [1, 2, 2, 3, 7, 8, 10, 11]
+```
+
+##
+
+## 判断一个数 n 是不是快乐数。
+对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。如果 可以变为 1，那么这个数就是快乐数。
+```
+输入：19
+输出：true
+解释：
+12 + 92 = 82
+82 + 22 = 68
+62 + 82 = 100
+12 + 02 + 02 = 1
+```
+```js
+const sum = (n) => {
+  let s = n + '';
+  let sum = 0;
+  
+  for(let i of s) {
+    sum += Math.pow(Number(i), 2);
+  } 
+  return sum;
+}
+
+const isHappyNum = (num) => {  
+  const map = new Map();
+  let res = sum(num);
+  
+  while(res !== 1) {
+    if(map.has(res)) return false;
+    
+    map.set(res, true);
+    
+    res = sum(res);
+  }
+  return true;
+}
+console.log(isHappyNum(19)); // true
+```
+
+##
+
+## 给定整数数组，找出和最大的子数组，子数组最少有一个元素。
+```js
+const arr = [4, 6, -100, 2, 3, 9];
+const findSubset = (arr) => {
+  if(arr.length === 1) return arr[0];
+  
+  for(let i = 1; i < arr.length; i++) {
+    if(arr[i - 1] > 0) {
+      arr[i] += arr[i - 1];
+    }
+  }
+  
+  console.log(arr); // [4, 10, -90, 2, 5, 14]
+  console.log(Math.max(...arr)); // 14
+}
+findSubset(arr);
 ```
