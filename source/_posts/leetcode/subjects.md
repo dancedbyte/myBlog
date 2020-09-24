@@ -2,9 +2,9 @@
 title: 算法题整理
 tags: JavaScript
 categories: JavaScript
+date: 2020-09-23
 ---
 
-## 目录
 1. 无重复字符的最长子串
 2. 比较两个对象中的值是否相等
 3. 给定升序整数数组，找出其中连续出现的数字区间，即前后相差1
@@ -38,13 +38,14 @@ categories: JavaScript
 31. 给定正整数 n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回可以获得的最大乘积
 32. 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null
 33. 给定两个字符串，判断他们是否是同构的。
-34. 给定排序数组，原地删除数组元素。
+34. 给定排序数组，原地删除数组中的重复元素，返回新数组的长度。
 35. 给定IP地址列表，请排序。
 36. 给定一维整数数组，返回二维数组，其中每个小数组长度为3并且之和为0。
 37. 合并两个有序数组nums1、nums2到nums1中，使nums1成为一个有序数组。
 38. 判断一个数 n 是不是快乐数。
-39. 给定整数数组，找出和最大的子数组，子数组最少有一个元素。
-
+39. 给定整数数组，找出一个和最大的子数组（最少有一个元素），输出这个最大的和。
+40. 给定数组和val值，原地移除数组中所有等于val的元素，只能使用O1的额外空间
+41. 将 id parentId 关系的数据 转化为 树形结构数据
 
 ## 无重复字符的最长子串
 利用滑动窗格思想，如果当前要累加的字符已经在之前的字符串中存在，则从索引位置向后截取。
@@ -1106,26 +1107,25 @@ judge('paper', 'title');
 
 ##
 
-## 给定排序数组，原地删除数组元素
-给定数组nums[1, 1, 2]。需要返回数字2，并且数组的前两个元素被修改为1和2。
+## 给定排序数组，原地删除数组中的重复元素，返回新数组的长度
 ```js
 const arr = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4];
 
 const remove = (arr) => {
-  let num = 0;
+  let i = 0;
   
-  for(let i = 1; i < arr.length; i++) {
-    if(arr[i] !== arr[num]) {
-      arr[++num] = arr[i]
+  while(i < arr.length) {
+    if(arr[i] === arr[i + 1]) {
+      arr.splice(i, 1)
+    } else {
+      i++;
     }
   }
   
-  arr.splice(0, num + 1)
-  
-  return num + 1;
+  console.log(arr); // [0, 1, 2, 3, 4]
+  return arr.length;
 }
-console.log(remove(arr)); // 5
-console.log(arr); // [0, 1, 2, 3, 4, 2, 2, 3, 3, 4] 前5个元素被修改为[0, 1, 2, 3, 4]
+remove(arr)
 ```
 
 ##
@@ -1258,14 +1258,16 @@ console.log(isHappyNum(19)); // true
 
 ##
 
-## 给定整数数组，找出和最大的子数组，子数组最少有一个元素。
+## 给定整数数组，找出一个和最大的子数组（最少有一个元素），输出这个最大的和。
 ```js
 const arr = [4, 6, -100, 2, 3, 9];
-const findSubset = (arr) => {
+const arr1 = [-50, 100, -1, 50];
+
+const findSubsetSum = (arr) => {
   if(arr.length === 1) return arr[0];
   
   for(let i = 1; i < arr.length; i++) {
-    if(arr[i - 1] > 0) {
+    if(arr[i - 1] >= 0 && arr[i] >= 0) {
       arr[i] += arr[i - 1];
     }
   }
@@ -1273,5 +1275,68 @@ const findSubset = (arr) => {
   console.log(arr); // [4, 10, -90, 2, 5, 14]
   console.log(Math.max(...arr)); // 14
 }
-findSubset(arr);
+findSubsetSum(arr);
 ```
+
+##
+
+## 给定数组和val值，原地移除数组中所有等于val的元素，只能使用O1的额外空间
+```js
+const remove = (nums, val) => {
+  let i = 0;
+  
+  while(i < nums.length) {
+    if(nums[i] === val) {
+      nums.splice(i, 1);
+    } else {
+      i++;
+    }
+  }
+  
+	console.log(nums); // [0, 1, 3, 0, 4]
+};
+
+remove([0,1,2,2,3,0,4,2], 2)
+```
+
+##
+
+## 将 id parentId 关系的数据 转化为 树形结构数据
+```js
+const data = [
+  {id:1, parentId: 0},
+  {id:2, parentId:1},
+  {id:3, parentId:1}
+];
+const buildTree = (list) => {
+  const temp = {};
+  const tree = [];
+  
+  list.forEach((it, idx) => temp[it.id] = it);
+  
+  for(const k in temp){
+    const parentId = temp[k].parentId;
+    
+    if(parentId) {
+      if(!temp[parentId].children) {
+        temp[parentId].children = [];
+      }
+      temp[parentId].children.push(temp[k]);
+    } else {
+      tree.push(temp[k]);
+    }
+  }
+
+  return tree;
+}
+console.log(buildTree(data)); 
+// [
+//      {
+//          id: 1, parentId: 0, children: [
+//              {id: 2, parentId: 1},
+//              {id: 3, parentId: 1},
+//          ]
+//      }      
+// ]
+```
+
