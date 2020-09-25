@@ -1,5 +1,5 @@
 ---
-title: 算法题整理
+title: 每日一道 算法题整理
 tags: JavaScript
 categories: JavaScript
 date: 2020-09-23
