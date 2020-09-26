@@ -1,8 +1,9 @@
 ---
 title: 百变 Promise
-tags: JavaScript
+tags: Promise
 categories: JavaScript
 date: 2020-09-25
+index_img: /img/promise.jpg
 ---
 
 ## 设计任务队列，要求分别在1 3 4 秒后打印出 '1' '2' '3'
