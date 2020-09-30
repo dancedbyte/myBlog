@@ -213,7 +213,7 @@ post:  # 部分配置同时控制自定义页面，注意备注
   banner_mask_alpha: 0.3  # available: 0 - 1.0
   meta:  # 文章标题下方的信息
     author:  # 作者，优先根据 front-matter 里 author 字段，其次是 hexo 配置中 author 值
-      enable: false
+      enable: true
     date:  # 文章日期，优先根据 front-matter 里 date 字段，其次是 md 文件日期
       enable: true
       format: "LL a"  # 格式参照 ISO-8601 日期格式化，可参照 http://momentjs.cn/docs/#/parsing/string-format/
@@ -235,7 +235,7 @@ post:  # 部分配置同时控制自定义页面，注意备注
   toc:  # 文章右侧目录
     enable: true
     headingSelector: h1,h2,h3,h4,h5,h6
-    collapseDepth: 0  # 层级的折叠深度，0 是全部折叠，6 是全部不折叠
+    collapseDepth: 6  # 层级的折叠深度，0 是全部折叠，6 是全部不折叠
   copyright:  # 版权声明
     enable: true
     #content: '本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！'
