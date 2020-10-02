@@ -32,8 +32,6 @@ const search = (str) => {
 search(str);
 ```
 
-## 
-
 ## 比较两个对象中的值是否相等
 ```js
 const compare = (source, target) => {
@@ -58,8 +56,6 @@ const target = {
 
 console.log(compare(source, target)); // false
 ```
-
-## 
 
 ## 给定升序整数数组，找出其中连续出现的数字区间，即前后相差1
 ```js
@@ -87,8 +83,6 @@ const search = (arr) => {
 
 search(arr);
 ```
-
-## 
 
 ## 字符串相加
 例如 
@@ -128,8 +122,6 @@ const res = multiply('15', '125');
 console.log(res);
 ```
 
-## 
-
 ## 字符串相乘
 例如 
 
@@ -158,8 +150,6 @@ var multiply = function(num1, num2) {
 
 multiply('15', '125');
 ```
-
-## 
 
 ## 排序两个有序数组
 const arr1 = [0, 1, 2, 4, 5];
@@ -199,8 +189,6 @@ const res = sort(arr1, arr2);
 
 console.log(res);
 ```
-
-## 
 
 ## 二维数组查找
 在二维数组中查找某元素，返回true或false，且每一行都是按照递增的顺序，每一行的元素个数都相等。
@@ -245,8 +233,6 @@ const res = isHasNum(arr, -1);
 console.log(res);
 ```
 
-## 
-
 ## 优化后的斐波那契数列
 ```js
 /*
@@ -285,8 +271,6 @@ const res = fibo(5);
 console.log(res);
 ```
 
-## 
-
 ## 统计一个数字在已排序数组中出现的次数
 注意题目是已排序，可以利用二分法查找的思想。
 ```js
@@ -319,8 +303,6 @@ const res = find(arr, 1);
 console.log(res);
 ```
 
-## 
-
 ## 求整数的二进制形式中数字1的个数
 例如：一个二进制数1100，从右边数起第三位是处于最右边的一个1。减去1后，第三位变成0，它后面的两位0变成了1，而前面的1保持不变，因此得到的结果是1011；
 
@@ -343,8 +325,6 @@ const summary = (num) => {
 const res = summay(-23);
 ```
 
-## 
-
 ##  表示数值的字符串
 字符串"+100","5e2","-123","3.1416"和"-1E-16"都表示数值。
 
@@ -357,8 +337,6 @@ const isNum = (s) => {
   return reg.test(s);
 }
 ```
-
-## 
 
 ## 字符串全排列
 利用回溯思想。
@@ -393,8 +371,6 @@ const res = showAllStr('abc');
 console.log(res);
 ```
 
-## 
-
 ## 替换空格
 将空格替换成 '%20'，不准用内置方法如split()
 
@@ -419,8 +395,6 @@ const replaceEmpty = (str) => {
 const res = replaceEmpty(str);
 console.log(res);
 ```
-
-## 
 
 ## 有一堆整数，把他们分成3份，并确保每一份的和 尽量相等
 ```js
@@ -466,8 +440,6 @@ const showSplit = (arr, n) => {
 console.log(showSplit(arr2, 3));
 ```
 
-## 
-
 ## 获取翻转数组中的最小值
 翻转数组指的是[4,5,6,1,2,3]、[5, 6, 8, 2, 4];
 ```js
@@ -503,8 +475,6 @@ const findMin1 = (arr) => {
 const res = findMin1(arr);
 console.log(res);
 ```
-
-## 
 
 ## 给定一个数据列表，把数据打印成有缩进的数据结果
 先将parentId类型的结构转化成树，在利用二叉树深度优先遍历输出结果。
@@ -560,8 +530,6 @@ const toTree = (arr) => {
 toTree(arr);
 ```
 
-## 
-
 ## 扑克牌中的顺子
 从扑克牌中随机抽5张牌，判断是不是一个顺子，即这5张牌是不是连续的。2～10为数字本身，A为1，J为11，Q为12，K为13，而大、小王为 0 ，可以看成任意数字。A 不能视为 14。
 
@@ -586,8 +554,6 @@ const isStraight = function (nums) {
 };
 ```
 
-## 
-
 ## 0～n-1中缺失的数字
 数组规律，递增，并且每个数字都在范围0～n-1之内，且只有一个数字不在该数组中。
 
@@ -610,8 +576,6 @@ const missingNumber = (arr) => {
     return left;
 };
 ```
-
-## 
 
 ## 排序多个有序数组
 利用归并排序的思路。
@@ -645,8 +609,6 @@ function merge(arr){
 
 console.log(merge([[1,1,2,3,12], [8,8,9,10], [-1,0,3,5]]))
 ```
-
-## 
 
 ## 将正整数数组中所有数字拼起来拼成一个数，找到所有可能拼接数字中最小的一个
 ```js
@@ -691,8 +653,6 @@ const res = findMin(arr5);
 const findMin = (nums) => nums.sort((a, b) => ('' + a + b) - ('' + b + a));
 ```
 
-## 
-
 ## 输入一个链表，输出链表的倒数第k个节点
 定义两个指针p和q，p先走k步，然后p,q一起走，直到p为null。最后的q即为倒数第k个节点。
 ```js
@@ -710,8 +670,6 @@ const findK = (head, k) => {
     return i < k ? null : q;
 };
 ```
-
-## 
 
 ## 获取两个链表的第一个交点
 遍历得到两个链表的长度，以此来得到长度差diff。
@@ -755,8 +713,6 @@ const findX = (l1, l2) => {
   return slow
 };
 ```
-
-## 
 
 ## 寻找两数之和，输出一种情况即可
 通过字典记录差值。
@@ -811,8 +767,6 @@ const change = (arr) => {
 change(arr3);
 ```
 
-## 
-
 ## 给定二叉树和sum，判读是否存在某条路径的和为sum
 利用先序遍历。
 ```js
@@ -842,8 +796,6 @@ const findList = (root, sum) => {
 }
 ```
 
-## 
-
 ## 复制复杂链表
 每个节点有 next(指向下一个) 和 random(指向任意一个或null) 两个指针。利用深拷贝的思路，map记录node节点。
 ```js
@@ -869,8 +821,6 @@ const copyList = (head) => {
   return copy(head);
 };
 ```
-
-## 
 
 ## 合并两个递增排序的链表，要求合并后的链表也保持递增顺序
 ```js
@@ -901,8 +851,6 @@ const mergeLink = (l1, l2) => {
 }
 ```
 
-## 
-
 ## 数组移动 0
 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
 ```js
@@ -923,8 +871,6 @@ const moveZero = (nums) => {
 console.log(fn2([0,1,0,3,0,7]))  //  [1,3,7,0,0,0]
 ```
 
-## 
-
 ## 传入整型数组arr和数字n，按照与n的最近的规律（即绝对值）排序元素
 ```js
 const arr = [7, 28, -1, 0, 7, 33];
@@ -944,8 +890,6 @@ const sortFunc = (arr, n) => {
 
 console.log(sortFunc(arr, 5)); // [7, 7, 0, -1, 28, 33]
 ```
-
-## 
 
 ## 给定target，求和为target的连续正整数序列
 如target = 9; 输出 [ [2, 3, 4], [4, 5] ]
@@ -979,8 +923,6 @@ const find = (target) => {
 find(15);
 ```
 
-## 
-
 ## 给定正整数 n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回可以获得的最大乘积
 如果n=5，则可以拆分成1和4，4又可以拆分成1和3，向下遍历，直到全为1。
 
@@ -1004,8 +946,6 @@ const integerBreak = (n) => {
     return dfs(n);
 };
 ```
-
-##
 
 ## 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null
 定义快慢指针。
@@ -1033,8 +973,6 @@ const findNode = function (head) {
     return null;
 };
 ```
-
-##
 
 ## 给定两个字符串，判断他们是否是同构的
 如果s中的字符可以被替换得到t，并且所有出现的字符都必须被同一个字符替换才行，且保留字符出现的顺序。
@@ -1064,8 +1002,6 @@ const judge = (s, t) => {
 judge('paper', 'title');
 ```
 
-##
-
 ## 给定排序数组，原地删除数组中的重复元素，返回新数组的长度
 ```js
 const arr = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4];
@@ -1086,8 +1022,6 @@ const remove = (arr) => {
 }
 remove(arr)
 ```
-
-##
 
 ## 给定ip地址列表并排序
 ```js
@@ -1113,8 +1047,6 @@ const deal = (demo) => {
 const res = deal(demo);
 console.log(res);
 ```
-
-##
 
 ## 给定一维整数数组，返回二维数组，其中每个小数组长度为3并且之和为0
 ```js
@@ -1153,8 +1085,6 @@ const sumZero = (arr) => {
 sumZero([1, 0, -1, 1, 2, -1, -4]);
 ```
 
-##
-
 ## 合并两个有序数组nums1、nums2到nums1中，使nums1成为一个有序数组。
 ```js
 const nums1 = [1, 2, 10];
@@ -1174,8 +1104,6 @@ const mergeToOne = (nums1, nums2) => {
 const res = mergeToOne(nums1, nums2);
 console.log(res); // [1, 2, 2, 3, 7, 8, 10, 11]
 ```
-
-##
 
 ## 判断一个数 n 是不是快乐数。
 对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。如果 可以变为 1，那么这个数就是快乐数。
@@ -1215,8 +1143,6 @@ const isHappyNum = (num) => {
 console.log(isHappyNum(19)); // true
 ```
 
-##
-
 ## 给定整数数组，找出一个和最大的子数组（最少有一个元素），输出这个最大的和。
 ```js
 const arr = [4, 6, -100, 2, 3, 9];
@@ -1237,8 +1163,6 @@ const findSubsetSum = (arr) => {
 findSubsetSum(arr);
 ```
 
-##
-
 ## 给定数组和val值，原地移除数组中所有等于val的元素，只能使用O1的额外空间
 ```js
 const remove = (nums, val) => {
@@ -1257,8 +1181,6 @@ const remove = (nums, val) => {
 
 remove([0,1,2,2,3,0,4,2], 2)
 ```
-
-##
 
 ## 将 id parentId 关系的数据 转化为 树形结构数据
 ```js
