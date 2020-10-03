@@ -66,13 +66,14 @@ index_img: /img/js_cssAndJsCanBlock.jpg
 ```
 
 ## DOMContentLoaded 何时执行？
-1. 当有css需要加载时，并且在css后面有js代码，那么 DOMContentLoaded 需要等待css加载完才去执行。
-2. 其他情况下 DOMContentLoaded 会在dom解析完成之后直接执行，不会等待css、图片、视频等的加载。
-
 >   为什么css后面一旦有了js语句，DOMContentLoaded就会后执行？
     
     因为 DOMContentLoaded 也不确定后面的js是否会去改变dom，比如removeChild等操作，所以它必须等js
     执行完成后才去触发。
+
+1. 当有css需要加载时，并且在css后面有js代码，那么 DOMContentLoaded 需要等待css加载完才去执行。
+
+2. 其他情况下 DOMContentLoaded 会在dom解析完成之后直接执行，不会等待css、图片、视频等的加载。
 
 ```html
 <!DOCTYPE html>
