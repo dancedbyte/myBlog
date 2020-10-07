@@ -27,9 +27,11 @@ index_img: /img/enj_cli.jpg
 4. 拷贝自定义模板到本地，一般拉取 github 上的写好的模版。
 
 ## 代码实战
-所用到的插件在每一行后有详细注释～
+新建 bin 目录，创建 gkoa.js。文件名需要和 package.json 中 bin 下的命令一致。
+
 ```js
 #!/usr/bin/env node
+
 const {program} = require('commander'); // 创建命令行工具
 const figlet = require('figlet'); // 绘制由特殊字符组成的字体
 const Printer = require('@darkobits/lolcatjs'); // 给特殊字体加颜色

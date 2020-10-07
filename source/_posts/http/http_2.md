@@ -216,13 +216,39 @@ private：只能被终端用户的浏览器缓存，不允许CDN等中间缓存�
 1. Service Worker 离线缓存
 
     ```
-    让 JS 运行在主线程之外，由于它脱离了浏览器的窗体，因此无法直接访问DOM。
+    1. Service Worker 让 JS 运行在主线程之外，是一个后台运行的独立线程，可以在代码中启用。
     ```
+   
+    ```js
+    // index.js
+    if ('serviceWorker' in navigator) {
+           navigator.serviceWorker.register('./sw.js').then(function () {
+               // 注册成功
+           });
+    }
+    ```
+   
+    ```js
+    // sw.js 请求拦截
+    self.addEventListener('fetch', function (e) {
+           // 如果有cache则直接返回，否则通过fetch请求
+           e.respondWith(
+               caches.match(e.request).then(function (cache) {
+                   return cache || fetch(e.request);
+               }).catch(function (err) {
+                   console.log(err);
+                   return fetch(e.request);
+               })
+           );
+    });   
+    ```
+
 2. Memory Cache 内存缓存
 
     ```
-    1. 效率上讲它是最快的，但存活时间来讲又是最短的，当渲染进程结束后，内存缓存也就不存在了。
-    2. 比较大的JS、CSS文件会直接被丢进磁盘，反之丢进内存。
+    1. 浏览器层面帮我们做的缓存，打开network可以看见有些请求的size字段会有 Memory Cache 字样。
+    2. 效率上讲它是最快的，但存活时间来讲又是最短的，当渲染进程结束后，内存缓存也就不存在了。
+    3. 比较大的JS、CSS文件会直接被丢进磁盘，反之丢进内存。
     ```
 3. Disk Cache 磁盘缓存
 
