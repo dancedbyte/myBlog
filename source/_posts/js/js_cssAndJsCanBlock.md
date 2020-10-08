@@ -6,6 +6,11 @@ date: 2020-10-02
 index_img: /img/js_cssAndJsCanBlock.jpg
 ---
 
+## 浏览器渲染过程
+JavaScript 会阻塞 DOM 构建，而 CSSOM 的构建又会阻塞 JavaScript 的执行。
+
+<img src="/img/js_cssAndJsCanBlock1.png" width=600 />
+
 ## js加载 会影响 dom 的解析与渲染吗？ 
 不会影响dom的解析，但是会影响dom的渲染！！
 
