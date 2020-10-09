@@ -65,7 +65,7 @@ index_img: /img/http_2_1.jpg
     ```js
     1. 根元素、position、transform、css滤镜、半透明、canvas、video、overflow
     2. css3D、transform、video。所以我们可以用transform代替position来做一些动画，以减少重排重绘。
-    3. transform会使GPU跳过绘制和布局阶段。
+    3. transform会生成一个全新的层，这样该层上的所有重绘操作不会影响别的层。
     ```
 
 5. **分块、栅格化**。有了绘制列表中的指令，真正执行绘制操作是由渲染引擎中的合成线程来完成。合成线程将图层分块并栅格化成位图。
