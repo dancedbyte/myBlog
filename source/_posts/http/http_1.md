@@ -1,7 +1,7 @@
 ---
 title: HTTP 知识梳理
 tags: HTTP
-categories: HTTP
+categories: 网络协议
 date: 2020-10-04
 index_img: /img/http_1_1.jpg
 ---
