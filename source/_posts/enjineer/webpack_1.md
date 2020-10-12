@@ -173,7 +173,7 @@ webpack4 取消了 UglifyjsWebpackPlugin，使用minimize进行压缩。
 取消了CommonsChunkPlugin，使用splitChunks进行分包。
 
 ### 拆分文件（splitChunks）
-<img src='http://note.youdao.com/yws/res/10248/WEBRESOURCEdee9efc746caca3a2f8e2373d74b43c2' width=300 />
+<img src='/img/webpack_1_2.png' width=300 />
 
 >   为什么webpack4默认帮我们做了分包，我们还需要自己配置分包呢？
     
@@ -347,7 +347,7 @@ module.exports = {
 ## webpack 构建流程
 上大图！！图片摘自 [前端日志](https://lmjben.github.io/blog/)！
 
-<img src='http://note.youdao.com/yws/res/10357/WEBRESOURCE4bad39013b4de8ad76c5e07df387603b' width=550 />
+<img src='/img/webpack_1_1.png' width=550 />
 
 1、读取 webpack.config.js 配置文件，生成 compiler 实例，并把 compiler 实例注入 plugin 中的 apply 方法中。
 
@@ -360,6 +360,42 @@ module.exports = {
 5、执行 compilation 的 seal 方法对每个 chunk 进行整理、优化。将所有模块中的 require 语法替换成 __webpack_require__ 来模拟模块化操作。
 
 6、最后把所有的模块打包进一个自执行函数（IIFE）中。
+
+## 常用插件汇总
+
+### yargs-parser
+解析命令行参数，一般传入 process.argv 来获取当前模式是开发还是生产。 
+
+process.argv 属性会返回一个数组，其中包含当 Node.js 进程被启动时传入的命令行参数。
+
+```json
+{
+  "scripts": {
+    "build": "webpack --mode development"
+  }
+}
+```
+
+```js
+// webpack.config.js
+
+const argv =  require('yargs-parser')(process.argv.slice(2)); // {mode: "development"}
+const _mode = argv.mode || "development";
+```
+
+### webpack-merge
+合并 webpack 配置文件。
+
+```js
+// webpack.config.js
+
+const _mergeConfig = require(`./config/webpack.${_mode}.config.js`);
+const merge = require('webpack-merge');
+
+const webpackConfig = {};
+
+module.exports = merge(_mergeConfig, webpackConfig);
+```
 
 ## 参考链接
 - [Webpack官网](https://webpack.js.org/)

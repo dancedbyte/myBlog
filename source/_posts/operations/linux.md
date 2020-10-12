@@ -116,6 +116,12 @@ lsof -i :3000 # 查看 3000 端口占用
 kill 3599 // 3599是进程对应的 PID
 ```
 
+15. 修改某个文件夹的读写执行等权限。更多可参考 [Linux chmod命令](https://www.runoob.com/linux/linux-comm-chmod.html)
+
+```
+chmod 777 /etc/blog
+```
+
 ## 常用目录
 
 ```

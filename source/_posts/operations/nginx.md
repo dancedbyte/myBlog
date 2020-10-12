@@ -8,7 +8,7 @@ index_img: /img/nginx_1.jpg
 
 ## 代理分类
 
-<img src='http://note.youdao.com/yws/res/9533/WEBRESOURCE97e57b449a463d4585dd49b9cd99c4a1' width=700 />
+<img src='/img/nginx_1_1.png' width=700 />
 
 1. 正向代理：代理的是客户端。一般是客户端明确知道要访问的是哪台服务器，通过正向代理做中转。例如客户端想访问谷歌需要借助梯子工具，这个梯子就起到了正向代理的作用。
 
@@ -29,7 +29,7 @@ index_img: /img/nginx_1.jpg
 nginx提供负载均衡的策略有两种，内置策略（轮询、加权轮询、ip hash 、热备四种）和拓展策略（拓展的先不去考虑，随着学习的深入再去了解）。
 
 #### 轮询
-<img src='http://note.youdao.com/yws/res/9547/WEBRESOURCE0b98cdc23921e30aa140e3d3ee9c5882' width=450 />
+<img src='/img/nginx_1_2.png' width=450 />
 
 ```js
 # 服务器处理请求的顺序为 ABABABA
@@ -40,7 +40,7 @@ upstream firstHttp {
 ```
 
 #### 加权轮询
-<img src='http://note.youdao.com/yws/res/9552/WEBRESOURCE55e0a19aac72f3f7848b1da200fb8b42' width=450 />
+<img src='/img/nginx_1_3.png' width=450 />
 
 ```js
 upstream firstHttp {
@@ -53,7 +53,7 @@ upstream firstHttp {
 #### ip hash
 对客户端请求的ip做hash处理，然后根据hash结果，让相同的客户端去请求相同（同一台）的服务器。**可以解决session不共享的问题**。
 
-<img src='http://note.youdao.com/yws/res/9563/WEBRESOURCE17dee301c50abb7db355d169d66bb8ea' width=450 />
+<img src='/img/nginx_1_4.png' width=450 />
 
 ```js
 upstream firstHttp {
@@ -108,30 +108,30 @@ location [ = | ~ | ~* | ^~ | 空 ] url { … }
 ### Location 匹配过程
 1. nginx 先根据 url 检查**最长匹配前缀字符串**，即会判断【=】、【^~】、【空】修饰符定义的内容。
 
-    ```
-    ①  如果能匹配到 最长前缀字符串
-    
-        i. 如果最长匹配前缀字符串被【=】修饰符匹配，则立即响应。
-       ii. 如果没有被【=】修饰符匹配，则执行第 2 步判断。
-    
-    ②  如果没有匹配到 最长前缀字符串，则执行第3步判断
-    ```
+```
+①  如果能匹配到 最长前缀字符串
+
+    i. 如果最长匹配前缀字符串被【=】修饰符匹配，则立即响应。
+   ii. 如果没有被【=】修饰符匹配，则执行第 2 步判断。
+
+②  如果没有匹配到 最长前缀字符串，则执行第3步判断
+```
     
 2. nginx 继续检查最长匹配前缀字符串，即判断【^~】、【空】修饰符定义的内容。
 
-    ```
-    ①  如果最长匹配前缀字符串被【^~】修饰符匹配，则立即响应。
-    
-    ②  如果被【空】修饰符匹配，则将该匹配保存起来，并执行第 3 步判断。
-    ```
+```
+①  如果最长匹配前缀字符串被【^~】修饰符匹配，则立即响应。
+
+②  如果被【空】修饰符匹配，则将该匹配保存起来，并执行第 3 步判断。
+```
 
 3. nginx 找到 nginx.conf 中定义的所有正则匹配修饰符【～】、【～*】，并按顺序进行匹配。
 
-    ```
-    ①  如果有任何正则修饰符匹配成功，则立即响应。
-    
-    ②  如果没有任何正则修饰符匹配成功，则响应第 2 步中存储的【空】匹配。
-    ```
+```
+①  如果有任何正则修饰符匹配成功，则立即响应。
+
+②  如果没有任何正则修饰符匹配成功，则响应第 2 步中存储的【空】匹配。
+```
 
 >   可以简要概括为：
 
@@ -202,7 +202,7 @@ server {
 ```
 
 ## 项目中配置
-<img src='http://note.youdao.com/yws/res/10094/WEBRESOURCEd8cbd6a6f3baec6908aaf7431e26d9d5' width=550 />
+<img src='/img/nginx_1_5.png' width=550 />
 
 ## 踩坑记录
 

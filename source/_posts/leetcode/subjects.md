@@ -1148,6 +1148,7 @@ console.log(isHappyNum(19)); // true
 const arr = [4, 6, -100, 2, 3, 9];
 const arr1 = [-50, 100, -1, 50];
 
+// 方式1
 const findSubsetSum = (arr) => {
   if(arr.length === 1) return arr[0];
   
@@ -1161,6 +1162,20 @@ const findSubsetSum = (arr) => {
   console.log(Math.max(...arr)); // 14
 }
 findSubsetSum(arr);
+
+// 方式2
+const findMax = (arr) => {
+  if(arr.length === 1) return arr[0];
+  
+  let prev = 0, max = arr[0];
+  
+  arr.forEach(it => {
+    prev = Math.max(it, prev + it); // 当前项 和 当前项+前一项 相比
+    max = Math.max(prev, max);
+  })
+  
+  console.log(max);
+}
 ```
 
 ## 给定数组和val值，原地移除数组中所有等于val的元素，只能使用O1的额外空间
