@@ -220,11 +220,11 @@ registerPaint('yd-sky', YdSky);
 
 **浏览器Elements**
 
-<img src='http://note.youdao.com/yws/res/11216/WEBRESOURCE2f1e90176d8773feb3dd9fa95c39dac6' width=400 />
+<img src='/img/css_1_1.png' width=400 />
 
 **效果图**
 
-<img src='http://note.youdao.com/yws/res/11221/WEBRESOURCE01d5a1cc5fc78ef3b958397c3c5f1b39' width=400 />
+<img src='/img/css_1_2.png' width=400 />
 
 ## CSS NEXT
 css next 代表下一代的 css 规范，目前主流浏览器已经支持css next语法，以后就不需要再使用预处理器来实现这些规则了。
@@ -312,7 +312,7 @@ a {
 
 写个练习。更多可参考 [官网](https://css-doodle.com/)
 
-<img src='http://note.youdao.com/yws/res/11180/WEBRESOURCEe9a5e739b99803d4433965aad15a42da' width=240 />
+<img src='/img/css_1_3.png' width=240 />
 
 #### css
 

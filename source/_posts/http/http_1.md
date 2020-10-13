@@ -68,7 +68,7 @@ OPTIONS：预请求，检查服务器的性能。当跨域或人为修改了cont
 
 ## TCP/IP 协议栈
 
-<img src='http://note.youdao.com/yws/res/8911/WEBRESOURCEb772782e2f88b0adfdbdf4e04525377e' width='400' />
+<img src='/img/http_1_1.jpg' width='400' />
 
 1. 共有五层。应用层、传输层、网络层、数据链路层、物理层。
 
@@ -95,14 +95,14 @@ OPTIONS：预请求，检查服务器的性能。当跨域或人为修改了cont
 
 ## HTTP 在协议栈中的位置
 
-<img src='http://note.youdao.com/yws/res/8894/WEBRESOURCEd8e9d7d9816b9126402be5c0ae30e0a1' width='400' />
+<img src='/img/http_1_2.png' width='400' />
 
 1. http默认端口80。https默认端口443。
 
 2. SSL是TLS的前身，它属于一个模块嵌入到http协议中
 
 ## cookie session 与 token
-<img src='http://note.youdao.com/yws/res/8990/WEBRESOURCE99c22d1cbbd9e7bdd791fcd3a1b191b3' width='400' />
+<img src='/img/http_1_3.png' width='400' />
 
 1. cookie是文本内容，存在于客户端，随请求发送该url下的所有cookie到服务端。
 
@@ -144,7 +144,7 @@ OPTIONS：预请求，检查服务器的性能。当跨域或人为修改了cont
 
 ### HTTP 2
 
-<img src='http://note.youdao.com/yws/res/9335/WEBRESOURCEa238f957ff0667d561c2fbac3f8a326b' width=400 />
+<img src='/img/http_1_4.png' width=400 />
 
 1. 使用二进制格式传输，更高效和紧凑。例如传输一个较大的资源时，用二进制的优势就很明显。
 
@@ -187,7 +187,7 @@ OPTIONS：预请求，检查服务器的性能。当跨域或人为修改了cont
 
 ### HTTP 3
 
-<img src='http://note.youdao.com/yws/res/9362/WEBRESOURCE87af33dce69fdef2e58af8bd200baf13' width=400 />
+<img src='/img/http_1_5.png' width=400 />
 
 1. 谷歌开发的全新的协议，颠覆了1和2的思想。现处于提案和测试阶段。
 

@@ -9,7 +9,7 @@ index_img: /img/http_2_1.jpg
 # 浏览器运行机制
 
 ## 进程和线程
-<img src='http://note.youdao.com/yws/res/9972/WEBRESOURCE4ccd5177df4509b112c0d23c1ffb688c' width=450 />
+<img src='/img/http_2_2.png' width=400 />
 
 1. 进程是资源分配的最小单位，线程是程序执行的最小单位。
 
@@ -22,7 +22,7 @@ index_img: /img/http_2_1.jpg
 5. **但是多进程的程序更加健壮**。多线程程序如果有一个线程断了，则整个程序就挂了。多进程程序的话则不会，**因为每个进程都有一个独立的空间地址**。
 
 ## 输入url到浏览器发生了什么？
-<img src='http://note.youdao.com/yws/res/10640/WEBRESOURCEa879bd1f9c5d2b13521ae2fc37bbbc1c' width=600 />
+<img src='/img/http_2_3.png' width=600 />
 
 ### 整体流程
 1. 浏览器进程、网络进程、渲染进程（渲染主线程、合成线程、IO线程等）。
@@ -78,7 +78,7 @@ index_img: /img/http_2_1.jpg
 ### DNS 解析
 看图就行。
 
-<img src='http://note.youdao.com/yws/res/10483/WEBRESOURCE58c8cf8667008b24e0845d8c4158cba3' width=700 />
+<img src='/img/http_2_4.png' width=700 />
 
 ### 建立 TCP 连接
 SYN: 发起连接
@@ -89,7 +89,7 @@ ACK: 确认应答
 
 FIN: 关闭连接
 
-<img src='http://note.youdao.com/yws/res/10550/WEBRESOURCEbdfa59edf73df5b3af8e2d0de645ad33' width=400 />
+<img src='/img/http_2_5.png' width=400 />
 
 
 #### 三次握手
@@ -129,7 +129,7 @@ FIN: 关闭连接
 
 ## 浏览器缓存机制
 
-<img src='http://note.youdao.com/yws/res/9254/WEBRESOURCE2bd43da917e8aa3280115063cd52c50d' width='400' />
+<img src='/img/http_2_6.png' width='400' />
 
 >   为什么要有缓存机制？
     
@@ -259,7 +259,7 @@ private：只能被终端用户的浏览器缓存，不允许CDN等中间缓存�
     ```
 
 ## 渲染引擎结构与工作流程
-<img src='http://note.youdao.com/yws/res/10595/WEBRESOURCEffe12ad5a73e72571009dbe45678e04f' width=550 />
+<img src='/img/http_2_7.png' width=550 />
 
 1. DOM树是至关重要的，一旦操作了dom树就会导致重新去生成渲染树和布局树。
 
@@ -268,7 +268,7 @@ private：只能被终端用户的浏览器缓存，不允许CDN等中间缓存�
 3. 在老版本浏览器中，每开一个tab页就需要建立一套浏览器进程、渲染进程、插件进程等。在现代浏览器中复用了浏览器进程和插件进程。**只需要建立一个渲染进程即可**，大大提升了效率。好处就是当一个tab页崩了不会影响其他**非同域**页面。
 
 ## V8(chrome JS解释引擎) 如何执行一段js代码
-<img src='http://note.youdao.com/yws/res/9941/WEBRESOURCEb742acfd68945fa8a347f9fdfee4bffe' width=550 />
+<img src='/img/http_2_8.png' width=550 />
 
 1. **将最初的源代码转化为抽象语法树(AST)，并生成执行上下文**。AST是一种重要的数据结构，Babel就是应用了AST这种数据结构，es6 -> es6 AST -> es5 AST -> js源代码
 
@@ -284,7 +284,7 @@ private：只能被终端用户的浏览器缓存，不允许CDN等中间缓存�
 4. 字节码 + 解释器 + 编译器。 被称为**即时编译**。
 
 ## 消息队列 事件循环
-<img src='http://note.youdao.com/yws/res/9969/WEBRESOURCEb37f2c56733bd9d6d6cb29cacf8cf42d' width=550 />
+<img src='/img/http_2_9.png' width=550 />
 
 >   页面使用单线程的缺点？
     
