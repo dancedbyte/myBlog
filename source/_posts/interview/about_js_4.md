@@ -146,3 +146,91 @@ const compare = (a, b) => {
 
 console.log(compare('1.3.0-rc.1', '1.3.0')); // -1
 ```
+
+## 实现一个发布订阅模式
+1. 发布订阅模式涉及三个对象：订阅者（可能会有多个）、发布者、主题对象（即数据）
+
+2. 每当主题对象状态发生改变，相关订阅者就会得到通知，并主动更新。
+
+```js
+// 主题对象
+function Dep() {
+    this.subs = []; // 订阅者列表
+}
+// 主题对象通知订阅者
+Dep.prototype.notify = function () {
+    this.subs.forEach(it => {
+        it.update(); // 执行每个订阅者自己的更新方法
+    });
+};
+
+// 订阅者
+function Sub(x) {
+    this.x = x;
+}
+// 订阅者自己的更新方法
+Sub.prototype.update = function () {
+    this.x = this.x + 1;
+    console.log(this.x);
+};
+
+const dep = new Dep(); // 主题对象实例
+dep.subs.push(new Sub(1), new Sub(2)); // 新增几个订阅者
+
+// 发布者
+const pub = {
+    publish: function () {
+        dep.notify();
+    }
+};
+pub.publish(); // 发布更新 输出 2 3
+```
+
+## 实现 LRU cache
+LRU 即最近最少使用算法。
+
+1. get / put 有效操作时，均为 先 cache.delete(k) 再 cache.set(k, v)。
+
+2. 当内存不够时，移除最近最少使用项，可借助 Map 通过 cache.keys().next().value 获取第一个 key（即最少使用)
+
+3. 因为 Map 本身具备 LRU 性质。通过 delete(key)、set(key) 就会将该 key 移动到尾部。
+
+```js
+class LRUCache {
+    constructor(memory) {
+        this.cache = new Map()
+        this.memory = memory
+    }
+    get(k) {
+        if (!this.cache.has(k)) return -1
+
+        const v = this.cache.get(k)
+
+        this.cache.delete(k)
+        this.cache.set(k, v)
+
+        return v
+    }
+    put(k, v) {
+        if (this.cache.has(k)) this.cache.delete(k);
+
+        this.cache.set(k, v);
+
+        if (this.cache.size > this.memory ) {
+            this.cache.delete(this.cache.keys().next().value)
+        }
+    }
+}
+
+const cache = new LRUCache( 2 ); // 缓存容量
+
+cache.put(1, 1);
+cache.put(2, 2);
+cache.get(1);       // 返回  1
+cache.put(3, 3);    // 该操作会使得密钥 2 作废
+cache.get(2);       // 返回 -1 (未找到)
+cache.put(4, 4);    // 该操作会使得密钥 1 作废
+cache.get(1);       // 返回 -1 (未找到)
+cache.get(3);       // 返回  3
+cache.get(4);       // 返回  4
+```
