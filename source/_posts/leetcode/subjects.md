@@ -1236,3 +1236,36 @@ console.log(buildTree(data));
 // ]
 ```
 
+## 计算出将 word1 转换成 word2 所使用的最少操作数
+你可以对一个单词进行三种操作：插入一个字符、删除一个字符、替换一个字符。
+
+```js
+const insteadStr = (s1, s2) => {
+  const len1 = s1.length + 1; // +1防止空字符串
+  const len2 = s2.length + 1; // +1防止空字符串
+  const dp = Array(len2).fill(0).map(() => Array(len1).fill(0)); // 生成矩阵
+  
+  // s1 在纵轴
+  for(let i = 0; i < len1; i++) {
+    dp[0][i] = i;
+  } 
+  // s2 在横轴
+  for(let j = 0; j < len2; j++) {
+    dp[j][0] = j;
+  }
+  
+  for(let j = 1; j < len2; j++) {
+    for(let i = 1; i < len1; i++) {
+      dp[j][i] = Math.min(
+      	dp[j][i - 1] + 1,
+        dp[j - 1][i] + 1,
+        dp[j -1][i - 1] + (s1[i - 1] === s2[j - 1] ? 0 : 1)
+      )
+    }
+  }
+  
+  return dp[s2.length][s1.length];
+};
+
+console.log(insteadStr('word1', 'word2222')); // 4
+```
