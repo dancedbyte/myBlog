@@ -91,7 +91,7 @@ search(arr);
 
 '198' + '198' = '396'
 ```js
-const multiply = (num1, num2) => {
+const add = (num1, num2) => {
   let i = num1.length;
   let j = num2.length;
   let area = 0;
@@ -118,7 +118,7 @@ const multiply = (num1, num2) => {
   return res;
 }
 
-const res = multiply('15', '125');
+const res = add('15', '125');
 console.log(res);
 ```
 
@@ -129,26 +129,34 @@ console.log(res);
 
 与相加不同的是，相乘需要将第一个字符串的每一位与第二个字符串的每一位相乘。是一对多的关系，而相加是一对一的关系。
 ```js
-var multiply = function(num1, num2) {
-  if(num1.startsWith('0') || num2.startsWith('0')) return 0;
-  
-  const N = new Array(num1.length + num2.length).fill(0);    // 初始化数组，因为相乘后位数会增加，用数组存储各位
+const multiply = (n1, n2) => {
+  if(n1 === 0 || n2 === 0) return 0;
+
+  const num1 = n1 + '';
+  const num2 = n2 + '';
+  const N = new Array(num1.length + num2.length).fill(0);    // 初始化数组
 
   for (let i = 0, last1 = num1.length - 1; i <= last1; i++) {
     const n1 = Number(num1[last1 - i]);
-    
+
     for (let j = 0, last2 = num2.length - 1; j <= last2; j++) {
       const n2 = Number(num2[last2 - j]);
-      const x = N[i + j] + n1 * n2;           // 累加对应位置数值
-      N[i + j] = x % 10;                      // 只保留一位数
-      N[i + j + 1] += Math.floor(x / 10);     // 进位
+      const x = N[i + j] + n1 * n2;           
+
+      N[i + j] = x % 10;                      
+      N[i + j + 1] += Math.floor(x / 10);
     }
   }
-  
-  console.log(N);
+
+  const reverseN = N.reverse();
+	
+  while(reverseN[0] === 0) reverseN.shift();
+
+  return reverseN.join('');
 };
 
-multiply('15', '125');
+console.log(multiply(4, 25));
+console.log(multiply(1865459497823, 6349526719336));
 ```
 
 ## 排序两个有序数组
