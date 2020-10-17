@@ -1093,6 +1093,40 @@ const sumZero = (arr) => {
 sumZero([1, 0, -1, 1, 2, -1, -4]);
 ```
 
+### 找出最接近给定值的三数之和
+```js
+const threeSumClosest = (nums, target) => {
+    if(nums.length <= 3) return nums.reduce((a, b) => a + b);
+  
+    const data = nums.sort((a, b) => a - b);
+    const len = data.length;
+  	let res = nums[0] + nums[1] + nums[2];
+    
+    for(let i = 0; i < len; i++) {
+        let left = i + 1;
+        let right = len - 1;
+        
+        while(left < right) {
+            const sum = data[left] + data[right] + data[i];
+            
+            if(Math.abs(sum - target) < Math.abs(res - target)) {
+              res = sum;
+            } else if (sum > target) {
+              right--;
+            } else if (sum < target) {
+              left++;
+            } else if (sum === target) {
+                res = sum;
+              break;
+            }
+        }
+    }
+    
+    console.log(res);
+    return res;
+};
+```
+
 ## 合并两个有序数组nums1、nums2到nums1中，使nums1成为一个有序数组。
 ```js
 const nums1 = [1, 2, 10];
@@ -1119,10 +1153,10 @@ console.log(res); // [1, 2, 2, 3, 7, 8, 10, 11]
 输入：19
 输出：true
 解释：
-12 + 92 = 82
-82 + 22 = 68
-62 + 82 = 100
-12 + 02 + 02 = 1
+1^2 + 9^2 = 82
+8^2 + 2^2 = 68
+6^2 + 8^2 = 100
+1^2 + 0^2 + 0^2 = 1
 ```
 ```js
 const sum = (n) => {
@@ -1136,11 +1170,11 @@ const sum = (n) => {
 }
 
 const isHappyNum = (num) => {  
-  const map = new Map();
+  const map = new Map(); // 建立一个字典表
   let res = sum(num);
   
   while(res !== 1) {
-    if(map.has(res)) return false;
+    if(map.has(res)) return false; // 如果该说在字典表中存在说明已经计算过 可直接返回
     
     map.set(res, true);
     

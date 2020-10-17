@@ -167,9 +167,9 @@ footer:
     uv_format: "总访客数 {} 人"
 
   beian:  # The footer of China's website policy, other areas keep disable
-    enable: false
-    icp_text: 京ICP证123456号 # ICP证号
-    police_text: 京公网安备12345678号 # 公安备案号，不填则只显示ICP
+    enable: true
+    icp_text: 冀ICP备18021265号 # ICP证号
+    police_text:  # 公安备案号，不填则只显示ICP
     police_code: 12345678 # 公安备案的编号，用于URL跳转查询
     police_icon: /img/police_beian.png # 公安备案的图片. 为空时不显示备案图片
 

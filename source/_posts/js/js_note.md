@@ -20,3 +20,16 @@ outer: for (let i = 0; i < 10; i++) {
 }
 alert('Done!');
 ```
+
+## 对象中 方法声明的区别
+在对象继承方面会有细微差别。
+
+```js
+const obj = {
+    hello: function() {}
+}
+
+const obj1 = {
+    hello(){}
+}
+```

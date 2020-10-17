@@ -1,5 +1,5 @@
 ---
-title: 日常整理 手写面试题～
+title: 日常整理 手写面试题
 tags: JavaScript
 categories: Interview
 date: 2020-09-29

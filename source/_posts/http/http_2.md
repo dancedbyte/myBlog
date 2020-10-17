@@ -213,7 +213,7 @@ private：只能被终端用户的浏览器缓存，不允许CDN等中间缓存�
 ## 浏览器中的缓存位置
 当强缓存命中或者协商缓存中服务器返回304的时候，我们直接从缓存中获取资源，那么浏览器中这些资源缓存在哪呢？
 
-1. Service Worker 离线缓存
+1. Service Worker 离线缓存 [详细介绍](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API)
 
     ```
     1. Service Worker 让 JS 运行在主线程之外，是一个后台运行的独立线程，可以在代码中启用。
