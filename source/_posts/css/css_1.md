@@ -231,7 +231,7 @@ css next 代表下一代的 css 规范，目前主流浏览器已经支持css ne
 
 更多语法可参考：[CSS NEXT](https://cssnext.github.io/features/)
 
-1. 自定义变量（--）、使用（var）
+1. 自定义变量（-- 两个短横线）、使用（var）
 
 ```css
 /* 全局的 */

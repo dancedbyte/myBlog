@@ -27,7 +27,7 @@ function _new(Func, ...args) {
 2. undefined、任意函数以及symbol，会被忽略（出现在非数组对象的属性值中时），或者被转换成 null（出现在数组中时）
 3. 不可枚举（enumerable为false）的属性、循环引用的属性都会被忽略
 
-#### JSON.stringify
+### JSON.stringify
 ```js
 function jsonStringify(obj) {
     let type = typeof obj;
@@ -62,7 +62,7 @@ jsonStringify([1, "false", false]) // "[1,"false",false]"
 jsonStringify({b: undefined}) // "{"b":"undefined"}"
 ```
 
-#### JSON.parse
+### JSON.parse
 ```js
 function jsonParse(opt) {
     return eval('(' + opt + ')');
@@ -170,12 +170,12 @@ en.introduce(); // ghm english
 
 ## 写一个通用的柯里化和反柯里化函数
 
-#### 柯里化
+### 柯里化
 函数柯里化，是固定部分参数，返回一个接受剩余参数的函数。
 
 目的是为了缩小适用范围，创建一个针对性更强的函数。
 
-##### es5
+**es5**
 ```js
 function curry(fn, ...args) {
   // fn.length 表示fn的形参个数。如add的参数a b c     
@@ -200,7 +200,7 @@ console.log(curryAdd(2)(3));
 console.log(curry(add)(1)(2)(3));
 ```
 
-##### es6
+**es6**
 ```js
 const curry = (fn, arr = []) => (...args) =>
   // 参数和arg指 [...arr,...args]
@@ -215,9 +215,9 @@ curryTest(1, 2)(4)(3); //返回10
 curryTest(1, 2)(3, 4); //返回10
 ```
 
-##### 练习
+**练习**
 ```js
-实现add函数，使之满足：
+// 实现add函数，使之满足：
 add(1)(2) // 3
 add(1, 2, 3)(10) // 16
 add(1)(2)(3)(4)(5) // 15
@@ -237,7 +237,7 @@ function add(...args) {
 }
 ```
 
-#### 反柯里化
+### 反柯里化
 扩大函数的是适用范围，创建一个应用范围更广的函数。
 ```js
 Function.prototype.uncurring = function() {
@@ -281,7 +281,22 @@ const res = compose(add1, mul3, div2)(1); // 3
 
 ## 手写深拷贝
 
-#### 拷贝数组、对象、防止循环引用
+>   通过 JSON.parse(JSON.stringify(obj))、Object.assign(target, source1, source1) 可以实现浅拷贝。
+
+>   浅拷贝指：只能拷贝一层，如果改变第二层的数据，则源对象和拷贝出来的对象的值都会改变。
+
+    const user = {
+      age: {
+        test: 30
+      }
+    };
+    const clone = Object.assign({}, user);
+    user.age.test = 30000;
+    
+    console.log(user); // user:{age:{test: 30000}} 
+    console.log(clone); // user:{age:{test: 30000}} 同时被改变
+
+### 拷贝数组、对象、防止循环引用
 ```js
 const deepClone = (target = {}, map = new WeakMap()) => {
     if(typeof target !== 'object' || target == null) return target;
@@ -303,7 +318,7 @@ const deepClone = (target = {}, map = new WeakMap()) => {
 }
 ```
 
-#### 拷贝正则
+### 拷贝正则
 ```js
 const cloneReg = (target, isDeep) => {
     const regFlag = /\w*$/g;

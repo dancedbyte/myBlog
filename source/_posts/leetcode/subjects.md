@@ -936,7 +936,7 @@ find(15);
 
 参考leetcode 343题。
 
-<img alt="pic" src='http://note.youdao.com/yws/res/9248/WEBRESOURCEc0f4588002afeef3f94ec041b1299c1e' width=400 />
+<img alt="pic" src='/img/leetcode_1.png' width=400 style="margin-bottom: 10px" />
 
 ```js
 const integerBreak = (n) => {
@@ -961,7 +961,7 @@ const integerBreak = (n) => {
 const findNode = function (head) {
     let slowP = head, fastP = head; // 都从头节点出发
 
-    while (fastP) {                // head就是null了，没有入环点，直接返回null
+    while (fastP) {                
         if (fastP.next == null) return null; // fastP.next为null也说明无环
         
         slowP = slowP.next;           // 慢指针走一步
@@ -1035,19 +1035,19 @@ remove(arr)
 ```js
 const demo = ['1.0.0', '1.0.0', '2.12.1', '2.12.3', '1.2.3.4.5', '0.18.1'];
 const deal = (demo) => {
-	demo.sort((a, b) => {
-    const arr = a.split('.');
-    const brr = b.split('.');
-    
-    let i = 0;
-    while(i < arr.length && i < brr.length) {
-      if(Number(arr[i]) === Number(brr[i])) {
-        i++;
-      } else {
-        return Number(arr[i]) - Number(brr[i]);
-      }
-    }
-  })
+    demo.sort((a, b) => {
+        const arr = a.split('.');
+        const brr = b.split('.');
+        
+        let i = 0;
+        while(i < arr.length && i < brr.length) {
+          if(Number(arr[i]) === Number(brr[i])) {
+            i++;
+          } else {
+            return Number(arr[i]) - Number(brr[i]);
+          }
+        }
+    })
   
   return demo;
 };

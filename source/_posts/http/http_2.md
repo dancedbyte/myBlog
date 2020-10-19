@@ -42,7 +42,7 @@ index_img: /img/http_2_1.jpg
     // 请求方法是GET，路径为根路径，HTTP协议版本为1.1
     GET / HTTP/1.1
     ```
-3. 查找强缓存，具体可参考 [http协议详解](https://note.youdao.com/)。    
+3. 查找强缓存，具体可参考 [http协议详解](https://www.ghmwin.com/2020/10/04/http/http_1/)。    
 
 4. DNS解析。输入的url是字符串，机器不能识别，去dns服务器（相当于大的数据库）里查出来对应的ip，一个ip可以对应一个机房，里面有好多服务器，可以通过nginx反向代理的手段转发到不同的服务器上。
 
@@ -62,7 +62,7 @@ index_img: /img/http_2_1.jpg
 
     > 哪些元素会生成层？哪些层GPU会参与加速？
     
-    ```js
+    ```
     1. 根元素、position、transform、css滤镜、半透明、canvas、video、overflow
     2. css3D、transform、video。所以我们可以用transform代替position来做一些动画，以减少重排重绘。
     3. transform会生成一个全新的层，这样该层上的所有重绘操作不会影响别的层。

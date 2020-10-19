@@ -179,3 +179,27 @@ Number(undefined) => // NaN
 parseInt(null); // parseInt('null') => NaN
 ```
 
+## toString 与 valueOf 的优先级（重要！！）
+当处理对象的原始值时，toString 和 valueOf 的执行顺序会根据执行时传入的类型有所区别。
+
+1. 对于 “string” hint，toString -> valueOf。
+2. 其他情况，valueOf -> toString。
+3. 如果没有 Symbol.toPrimitive 和 valueOf，toString 将处理所有原始值转换。
+
+```js
+let user = {
+  name: "John",
+
+  valueOf() {
+    return 1;
+  },
+  
+  toString() {
+    return this.name;
+  }
+};
+
+alert(user + 100); // 101 底层的hint类型为 num。 则先调用 valueOf 方法
+alert(user); // John 底层的hint类型为 string。 则先调用 toString 方法
+```
+ 
