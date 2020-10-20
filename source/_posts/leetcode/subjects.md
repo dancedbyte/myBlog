@@ -1,7 +1,7 @@
 ---
 title: 每日一道 算法题整理
-tags: Leetcode
-categories: JavaScript
+tags: 算法
+categories: 数据结构与算法
 date: 2020-09-23
 index_img: /img/leetcode.jpg
 ---
@@ -840,7 +840,6 @@ const mergeLink = (l1, l2) => {
   let p = l;
 
   while(l1 && l2) {
-    // 不需要区分 l1.val === l2.val 的情况。因为指针会自动向下遍历
     if(l1.val <= l2.val) {
       p.next = l1;
       l1 = l1.next;
@@ -876,7 +875,7 @@ const moveZero = (nums) => {
     return nums;
 }
 
-console.log(fn2([0,1,0,3,0,7]))  //  [1,3,7,0,0,0]
+console.log(moveZero([0,1,0,3,0,7]))  //  [1,3,7,0,0,0]
 ```
 
 ## 传入整型数组arr和数字n，按照与n的最近的规律（即绝对值）排序元素
@@ -905,7 +904,7 @@ console.log(sortFunc(arr, 5)); // [7, 7, 0, -1, 28, 33]
 const find = (target) => {
   if(!target) return [];
   
-  const mid = Math.ceil(target / 2); 
+  const mid = Math.ceil(target / 2); // 多数相加，最大数一定小于取中的数字
   const arr = Array(mid).fill().map((it, idx) => idx + 1);
   const res = [];
   let i = 0; // 记录索引
@@ -1310,4 +1309,36 @@ const insteadStr = (s1, s2) => {
 };
 
 console.log(insteadStr('word1', 'word2222')); // 4
+```
+
+## 计算所有部门的工资的总和
+1. 递归时，js 的调用记录栈会保留每一次执行的上下文，最先执行的会被压入栈底。
+
+2. 当整个递归遍历结束，会将执行上下文依次从栈顶弹出，所以说最先进入执行栈的会被最后参与计算。
+
+```js
+const company = { 
+  sales: [{name: 'John', salary: 1000}, {name: 'Alice', salary: 1600 }],
+  development: {
+    sites: [{name: 'Peter', salary: 2000}, {name: 'Alex', salary: 1800 }],
+    internals: [{name: 'Jack', salary: 1300}]
+  }
+};
+const dfs = (cur) => {
+  if(Array.isArray(cur)) {
+    return cur.reduce((prev, next) => prev + next.salary, 0); // 易错，要给定初始值0，让返回结果作为下一次计算的 prev 
+  } else {
+    let sum = 0;
+    
+    for(const val of Object.values(cur)) {
+      const res = dfs(val);
+        
+      console.log(res); // 最先输出 2600. 但是 2600 是最后参与的加法运算。
+      sum += res;
+    }
+    return sum;
+  }
+};
+const res = dfs(company);
+console.log(res);
 ```
