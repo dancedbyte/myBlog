@@ -218,9 +218,10 @@ curryTest(1, 2)(3, 4); //返回10
 **练习**
 ```js
 // 实现add函数，使之满足：
-add(1)(2) // 3
-add(1, 2, 3)(10) // 16
-add(1)(2)(3)(4)(5) // 15
+// 加了一个 sumOf 方法，只需让 sumOf 执行 fn.toString 即可。
+add(1)(2).sumOf() // 3
+add(1, 2, 3)(10).sumOf() // 16
+add(1)(2)(3)(4)(5).sumOf() // 15
 
 function add(...args) {
   const fn = (...innerArgs) => {
@@ -228,7 +229,10 @@ function add(...args) {
     
     return add.apply(null, allArgs);
   }
-  
+
+  fn.sumOf = function() {
+    return fn.toString();
+  }
   fn.toString = function() {
     return args.reduce((prev, cur) => prev + cur)
   }

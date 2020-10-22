@@ -288,14 +288,12 @@ const callbacks = [];
 let timerFunc;
 
 function nextTick(cb?: Function, ctx?: Object) {
-  let _resolve;
-  
-  // 1.将传入的 flushSchedulerQueue 方法添加到回调数组
+  // 1. cb 指具体更新视图的方法：flushSchedulerQueue。将传入的更新方法添加到回调数组
   callbacks.push(() => {
     cb.call(ctx);
   });
   
-  // 2.执行异步任务。此方法会根据浏览器兼容性，选用不同的异步策略
+  // 2. 执行异步任务。此方法会根据浏览器兼容性，选用不同的异步策略
   timerFunc();
 }
 ```

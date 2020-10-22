@@ -30,6 +30,20 @@ module.exports = {
 }
 ```
 
+>   多页开发时。如何优雅的遍历所有入口文件？
+
+    const reg = /.+\/([a-zA-Z]+-[a-zA-Z]+)(\.entry\.js|jsx$)/g;
+    const str = './books-add.entry.jsx';
+    const str1 = './books-add.entry.js';
+    
+    if(reg.test(str)) {
+    	console.log(RegExp.$1); // books-add
+    
+      const [dist, template] = RegExp.$1.split("-"); // 拿到 一级目录 及 模板名称
+    } else {
+      console.log('else')
+    }
+
 ### 输出（output）
 通知webpack在哪里输出所构建的模块，以及如何命名这些输出文件。
 ```js
@@ -108,7 +122,11 @@ module.exports = function(source) {
 ```
 
 ### 插件（plugins）
-插件本质是一个类，通过监听 webpack 构建流程上的钩子函数，可以更精密地控制 webpack 的输出，包括：打包优化、资源整合等。
+webpack 使用 [tapable](https://github.com/webpack/tapable) 这个库实现整个构建流程上钩子函数的创建。
+
+webpack 会在内部对象上创建多个生命周期钩子，插件本质是一个类，通过将插件挂载到合适的钩子上，webpack 执行到该钩子函数时就会触发所绑定的插件。
+
+插件可以更精密地控制 webpack 的输出，包括：打包优化、资源整合等。
 
 #### 基本使用
 ```js
