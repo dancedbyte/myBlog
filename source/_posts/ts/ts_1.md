@@ -29,7 +29,10 @@ tsc --init // 初始化生成tsconfig.json
 ## 基本语法
 
 ### 基础类型
-null, undefined, number, string, boolean, symbol, void
+null, undefined, number, string, boolean, symbol, void(空值)，any，unknown(ts 3.0新增)，never
+
+> unknown 是 any 的安全版本，虽然他们都可以代表任何类型。但 unknown 表示这个变量或函数还未被确定类型时，是不能进行实例化、函数执行等操作。
+
 ```typescript
 // 方式1
 let count: number;
@@ -40,8 +43,19 @@ let count: number | string = 123;
 count = '123'; // 不会报错
 ```
 
+```typescript
+// never 表示那些永远不存在的值类型
+
+const empty: never[] = []; // 空数组，而且永远是空的
+
+// 抛出异常的函数，永远也不会有返回值
+function error(message: string): never {
+    throw new Error(message);
+}
+```
+
 ### 对象类型
-class, object, function, arrary
+class, object, function, array，enum（枚举）
 
 **function**
 ```typescript
@@ -73,7 +87,7 @@ const arr: User[] = [{
 ```
 
 **array 元组**
-```typescript
+```
 // 当数组长度固定，且元素类型固定时，可用元组。
 const info: [string, string, number] = ['1', '2', 3];
 
@@ -82,6 +96,39 @@ const infoList: [string, string, number][] = [
     ['4', '5', 6]
     ['7', '8', 9]
 ];
+```
+
+**enum 枚举**
+```typescript
+// 当一个元素有多种不同的取值时，可以用枚举来列出，如果不给他们赋值，则他们的值默认是从 0 开始累加的。
+
+// 数字枚举
+enum Direction {
+    Up, // 默认 0 如果我们把 Up = 5 进行赋值后，那么 Down 会自动累加为 6
+    Down // 默认 1
+}
+
+// 字符串枚举
+enum Direction {
+    Up = 'Up',
+    Down = 'Down',
+}
+console.log(Direction['Right'], Direction.Up); // Right Up
+
+// 反向映射
+enum Direction {
+    Up, 
+    Down
+}
+console.log(Direction[0]); // Up
+
+// 联合枚举类型
+enum Direction {
+    Up, 
+    Down
+}
+declare let a:Direction;
+a = Direction.Up; // 正确 因为 a 可以看作联合类型 Direction.Up | Direction.Down
 ```
 
 ### 类型注解 类型推断
@@ -129,6 +176,22 @@ function add({a, b} : {a: number, b: number}) {
 }
 ```
 
+### 类型推断 as
+在 js 中我们声明一个空对象，然后对空对象添加属性，这样是符合规范的。但是在 ts 中是不行的，所以需要类型推断。
+
+```typescript
+// js 
+const obj = {};
+obj.name = 'draw'; // js 是允许这样使用的
+
+// ts
+interface IUser {
+  name: string
+}
+const obj = {} as IUser; // 因为ts一开始不知道我们以后会有 name 属性。所以加个类型推断
+obj.name = 'draw'; // 现在可以正常使用了
+```
+
 ### interface接口
 interface只是约束我们在开发过程中的规范性，真正编译成js时interface相关代码会被剔除掉。
 
@@ -165,7 +228,7 @@ class User implements Person {
 ```
 
 **接口抽离公共类型声明**
-```typescript
+```
 interface Common {
     name: string
 }
@@ -182,6 +245,63 @@ show({
     name: 'dell',
     age: 123, // 会报错 因为Common接口中没有age声明，所以抽离公用类型时，要注意。
 });
+```
+
+### type类型映射
+如果我们写好了一个接口，现在需要将里面的属性全变成可选的、或只读的。那么就需要类型映射。
+
+ts 内置的映射方法有： Partial（可选）、Readonly（只读）、Pick（抽取）、Required(将属性变成必选)
+
+**Partial**
+```typescript
+// Partial
+interface IUser {
+    username: string,
+    id: number,
+}
+type TypeIUser = Partial<IUser> // ts 内置方法
+
+const testFunc = (obj: TypeIUser) => {};
+testFunc({username: 'a'});
+
+// Partial 源码实现
+type partial<T> = {
+    [K in keyof T]?: T[K] // 也是应用了泛型的概念，配合 in keyof
+}
+interface IUser {
+    username: string,
+    id: number,
+}
+type TypeIUser = partial<IUser>
+
+const testFunc = (obj: TypeIUser) => {};
+testFunc({username: 'a'});
+
+// Partial 如果是嵌套对象呢？就需要递归一下
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object
+  ? DeepPartial<T[K]>
+  : T[K]
+};
+type DeepUser = DeepPartial<IUser>
+```
+
+**Pick**
+```typescript
+interface IUser {
+    username: string,
+    id: number,
+    age: number
+}
+// 抽取出自己想要的类型声明
+type PickIUser = Pick<IUser, 'username' | 'id'>;
+/*
+*   PickIUser = {
+*       username: string,
+        id: number,
+*   }
+* 
+* */
 ```
 
 ### 类的基本使用
@@ -392,6 +512,14 @@ console.log(test.getName());
 
 2. 这些成员可以是：函数参数、函数返回值、类的方法、类的实例成员。
 
+3. 泛型约束，如果我们要设计一个函数，该函数接受两个参数，一个是对象，一个是对象的某一个属性，通过这两个参数来完成该函数的返回值。
+
+```typescript
+function getVal<T extends object, U extends keyof T>(obj: T, key: U) {
+    return obj[key]
+}
+```
+
 ### 使用场景 1
 例如想实现一个队列，需要推入和类型和弹出的类型保持一致。**当然通过限制推入的类型也可以实现。但用泛型来实现可能会更优雅**。
 
@@ -473,6 +601,44 @@ async function test() {
 }
 ```
 
+### 使用场景 4
+实现一个 pick 函数，即可以从一个对象上取出指定的属性。
+
+```js
+const user = {
+    username: 'Jessica Lee',
+    id: 460000201904141743,
+    token: '460000201904141743',
+    avatar: 'http://dummyimage.com/200x200',
+    role: 'vip'
+}
+```
+
+```typescript
+// js 实现
+function pick(obj, keys) {
+  return keys.map(it => obj[it])
+}
+pick(user, ['username'])
+
+// ts 简单实现
+interface IUser {
+  [key: string]: any
+}
+function pick(obj: IUser, keys: string[]) {
+  return keys.map(it => obj[it])
+}
+pick(user, ['username', 'avatar'])
+
+// ts 泛型实现
+// 实现思路：先编写参数 obj 和 names 对应的泛型。通过需求可发现 K 一定属于 keyof T。T[K][] 是 pick 函数返回值
+function pick<T, K extends keyof T>(obj: T, names: K[]): T[K][] {
+    return names.map(n => obj[n]);
+}
+
+pick(user, ['token', 'id',]);
+```
+
 ## interface 与 type 区别
 
 ### 相同点
@@ -521,7 +687,7 @@ interface User1 extends User {
 
 #### type 可以但 interface 不行
 
-1. type 可以声明基本类型、联合类型、元祖（数组的每个位置类型都可确定即元组）。
+1. type 可以声明基本类型、联合类型、元祖（数组的每个位置类型都可确定即元组）。**但 interface 只能声明对象类型**。
 
 ```typescript
 // 基本类型别名
