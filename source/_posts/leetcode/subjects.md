@@ -11,19 +11,19 @@ index_img: /img/leetcode.jpg
 ```js
 let str = 'pwwkewa';
 
-const search = (str) => {
+const search = (s) => {
   let i = 0;
-  let res = 0;
-  let str = '';
+  let res = 0; // 记录最大值
+  let str = ''; // 记录最长字符串
   const map = new Map();
   
   for(let j = 0; j < s.length; j++) {
     if(map.has(s[j]) && map.get(s[j]) >= i) i = map.get(s[j]) + 1;
     
     res = Math.max(res, j - i + 1);
-    str = s.slice(i, j + 1).length > str.length ? s.slice(i, j + 1) : str;
+    str = s.slice(i, j + 1).length > str.length ? s.slice(i, j + 1) : str; // slice 是左闭右开的原则，所以需要 j + 1
     
-    map.set(s[j], j);
+    map.set(s[j], j); // 将索引 作为 val
   }
   
   console.log(str);
@@ -40,8 +40,11 @@ const compare = (source, target) => {
   if(typeof target !== 'object') return source === target;
   
   for(let key in target) {
-    if(!compare(source[key], target[key])) {
-     	return false; 
+    // 不去遍历原型上的属性
+    if(target.hasOwnProperty(key)) {
+        if(!compare(source[key], target[key])) {
+            return false; 
+        }
     }
   }
   
@@ -59,29 +62,29 @@ console.log(compare(source, target)); // false
 
 ## 给定升序整数数组，找出其中连续出现的数字区间，即前后相差1
 ```js
-const arr = [0, 1, 2, 4, 5, 7, 13, 15, 16];
+const arr = [0, 1, 2, 4, 5, 7, 13, 15, 16, 17, 20, 21];
 
-const search = (arr) => {
-  const res = [];
-  
-  for(let i = 0; i < arr.length;) {
-    let j = i;
-    
-    while(arr[j] + 1 === arr[j + 1]) {
-      j += 1;
+const find = (arr) => {
+    let i = 0;
+    const res = [];
+
+    while (i <= arr.length - 1) {
+        let j = i; // 记录起始点
+
+        while (arr[i] + 1 === arr[i + 1]) {
+            i++;
+        }
+
+        // 一旦不等 则说明进入了上面的 while 循环。则用 slice 进行截取
+        if(i !== j) res.push(arr.slice(j, i + 1));
+
+        i++;
     }
-    
-    j === i ? res.push(arr[j]) : res.push(arr.slice(i, j + 1))
 
-    i = j + 1;
-  }
-  
-  console.log(res);  // [[0, 1, 2], [4, 5], 7, 13, [15, 16]]
- 
-  return res;
+    console.log(res);
+    return res;
 };
-
-search(arr);
+find(arr);
 ```
 
 ## 字符串相加
@@ -96,25 +99,22 @@ const add = (num1, num2) => {
   let j = num2.length;
   let area = 0;
   let res = '';
-  
+
   while(i > 0 && j > 0) {
-    i--;
-    j--;
-    
-	let sum = Number(num1[i]) + Number(num2[j]) + Number(area);
-    
-    res = sum % 10 + res;
-    
-    area = Math.floor((Number(num1[i]) + Number(num2[j])) / 10); // 向上累加的值。例如 9 + 8 = 17  area = 1
+      i--;
+      j--;
+
+      let sum = Number(num1[i]) + Number(num2[j]) + Number(area); // 当前位的值 + 上一次被累加进来的值
+
+      res = sum % 10 + res; // 当前位上的值
+
+      area = Math.floor((Number(num1[i]) + Number(num2[j])) / 10); // 向上累加的值。例如 9 + 8 = 17  area = 1
   }
-  
-  if(i > 0) {
-    return area > 0 ? (Number(num1.slice(0, i)) + Number(area)) + res : num1.slice(0, i) + res;
-  }
-  if(j > 0) {
-    return area > 0 ? (Number(num2.slice(0, j)) + Number(area)) + res : num2.slice(0, j) + res;
-  }
-  
+
+  // 表示 num1 的长度大于 num2 的长度。则把 num1 前几位截取下来
+  if(i > 0) return area > 0 ? (Number(num1.slice(0, i)) + Number(area)) + res : num1.slice(0, i) + res;
+  if(j > 0) return area > 0 ? (Number(num2.slice(0, j)) + Number(area)) + res : num2.slice(0, j) + res;
+
   return res;
 }
 
@@ -1341,4 +1341,134 @@ const dfs = (cur) => {
 };
 const res = dfs(company);
 console.log(res);
+```
+
+## 生成菱形
+主要练习使用 repeat。给定重复次数，可以不用再去使 for 循环遍历生成，可以直接帮我们生成一段重复的字符。
+
+```js
+const gen = (n) => {
+  let str = '';
+  
+  const genFunc = (n, i) => {
+    str += ' '.repeat((n - i) / 2) + '*'.repeat(i) + '\n';  
+  }
+
+  for(let i = 1; i <= n; i += 2) {
+		genFunc(n, i);
+  }
+  
+  for(let i = n - 2; i >= 1; i -= 2) {
+		genFunc(n, i);
+  }
+  
+  console.log(str);
+}
+gen(7);
+/*
+       *
+      ***
+     *****
+    *******
+     *****
+      ***
+       *
+*/
+```
+
+## 杨辉三角形
+1. 杨辉的规则是每一行的第一个元素和最后一个元素都是 1。
+2. 假设当前是 m 行，每行的每个元素记为第 n 个元素。则用公式可以表示为：C(m, n) = C(m-1, n) + C(m -1, n -1)
+
+```js
+const gen = (n) => {
+  // 第m行的 第n个元素
+  const combine = (m, n) => {
+    if(n === 0 || m === n) return 1; // 某行的第一个元素和最后一个元素都是 1
+    
+    return combine(m - 1, n - 1) + combine(m - 1, n)      
+  }
+  
+  let res = '';
+  // 外层 for 代表当前第几行
+  for(let i = 0; i < n; i++) {
+    let str = '';
+    
+    // 内层 for 代表当前行的数字都有哪些，当前行的元素个数一定小于等于当前行数
+    for(let j = 0; j <= i; j++) {
+      str += combine(i, j) + ' ';
+    }
+    str += '\n';
+    res += str;
+  }
+  
+  console.log(res);
+}
+gen(8);
+
+/*
+    1 
+    1 1 
+    1 2 1 
+    1 3 3 1 
+    1 4 6 4 1 
+    1 5 10 10 5 1 
+    1 6 15 20 15 6 1 
+    1 7 21 35 35 21 7 1 
+*/
+```
+
+## 杨辉三角形 变形2
+求第 m 行的元素并输出。
+
+```js
+const find = (m) => {
+  let result = [];
+  
+  // 由杨辉的规则可以得出第 m 行 算上左右的两个1 一共有 m 个元素
+  for(let i = 1; i <= m; i++) {
+    for(let j = result.length - 1; j > 0; j--) {
+      result[j] = result[j] + result[j-1]; // 一直在同一个数组上进行操作，相当于替换当前值
+    }
+    result = result.concat(1);
+  }
+  console.log(result);
+};
+
+find(3); // [1, 2, 1]
+```
+
+## 合并两个number数组a，b并排序
+合并两个number数组a，b并排序，如果有一个数出现多次，如a数组有1个5，b数组有2个5，合并出的数组应有2个5，即按次数多的保留.
+
+```js
+const nums1 = [3, 1, 2, 5, 6, 5];
+const nums2 = [9, 6, 5, 7, 5, 7];
+
+const mergeToOne = (nums1, nums2) => {
+    const nums = [...nums1, ...nums2];
+    let res = [];
+    const filterFunc = (arr, n) => arr.filter(it => it === n);
+    const map = new Map(); // 关键是创建一个字典表，如果之前统计过，则跳过
+
+    for(let i = 0; i < nums.length; i++) {
+        const it = nums[i];
+
+        if((nums1.includes(it) && !nums2.includes(it)) || (!nums1.includes(it) && nums2.includes(it))) {
+            res.push(it);
+        } else {
+            if(map.get(it)) continue; // continue 不能在 forEach 中使用
+
+            const cur1 = filterFunc(nums1, it);
+            const cur2 = filterFunc(nums2, it);
+
+            res = res.concat(cur1.length > cur2.length ? cur1 : cur2);
+            map.set(it, true);
+        }
+    }
+
+    return res.sort((a, b) => a - b);
+};
+const res = mergeToOne(nums1, nums2);
+console.log(res); // [1, 2, 3, 5, 5, 6, 7, 7, 9]
 ```

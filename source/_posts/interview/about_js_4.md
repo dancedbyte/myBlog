@@ -198,7 +198,7 @@ LRU 即最近最少使用算法。
 ```js
 class LRUCache {
     constructor(memory) {
-        this.cache = new Map()
+        this.cache = new Map(); // 可以把 cache 理解成一个管道，当内存不够时，第一个元素就要被挤出管道。
         this.memory = memory
     }
     get(k) {
@@ -206,8 +206,8 @@ class LRUCache {
 
         const v = this.cache.get(k)
 
-        this.cache.delete(k)
-        this.cache.set(k, v)
+        this.cache.delete(k);
+        this.cache.set(k, v); // 先删除 在推入管道，表示该元素最近被使用过。
 
         return v
     }
@@ -217,7 +217,7 @@ class LRUCache {
         this.cache.set(k, v);
 
         if (this.cache.size > this.memory ) {
-            this.cache.delete(this.cache.keys().next().value)
+            this.cache.delete(this.cache.keys().next().value); // keys().next().value 获取管道中第一个 key 
         }
     }
 }
