@@ -21,25 +21,12 @@ outer: for (let i = 0; i < 10; i++) {
 alert('Done!');
 ```
 
-## 对象中 方法声明的区别 TODO
-在对象继承方面会有细微差别。
-
-```js
-const obj = {
-    hello: function() {}
-}
-
-const obj1 = {
-    hello(){}
-}
-```
-
 ## Number.toPrecision() 方法
 返回指定长度的**数值字符串**。转换时会四舍五入
 
 ```js
 const num = 13.3714;
-const n = num.toPrecision(3);
+const n = num.toPrecision(3); // 长度 3 包括小数点前的整数部分
 
 console.log(n, typeof n); // 13.4 string
 ```
@@ -59,7 +46,7 @@ const user = {
   }
 };
 
-// 转换演示：
+// 转换：
 alert(user); // hint: string -> {name: "John"}
 alert(+user); // hint: number -> 1000
 alert(user + 500); // hint: default -> 1500
@@ -164,21 +151,24 @@ messages.shift(); // 该条消息被删除，则 weakMap 中存储的该条记�
 
 ```js
 function trampoline(f) {  
+  // 将递归展平。当 f 还是函数时就一直执行  
   while (f && f instanceof Function) {
     f = f()
   }
-  return f
+
+  // 当 f 执行完成则 f 不再是函数，就返回结果  
+  return f;
 }
 
-// 斐波那契数列
+// 斐波那契数列：1 1 2 3 5 8 ....
 function f(n, a = 1, b = 1) {  
   if(n === 0) return 0;
   if(n === 1) return a;
   if(n === 2) return b;
   
-  return f.bind(null, n - 1, b, a + b);
+  return f.bind(null, n - 1, b, a + b); // 这也是蹦床函数的缺点，需要我们修改已经写好的递归函数的内部代码
 }
 
 const res = trampoline(f(6));
-console.log(res);
+console.log(res); // 8 
 ```

@@ -1,5 +1,5 @@
 ---
-title: Webpack 使用记录（一）
+title: Webpack4 使用总结
 tags: Webpack
 categories: 前端工程化
 date: 2020-10-08
@@ -9,18 +9,11 @@ index_img: /img/webpack_1.jpg
 # Webpack
 1. webpack是一个模块打包器，主要实现将所有js文件打包在一起以供浏览器使用。
 
-2. 能打包、转换任何类型（css、jsx、less ...）的资源。
+2. 能集成各种 loader plugin，以打包、转换任何类型（css、jsx、less ...）的资源。
 
 3. webpack4 比 webpack3 构建速度快了98%，提倡零配置即可快速构建，当然要实现一个完整的项目也需要手动去完善，所以学好细化 webpack 还是很重要的。
 
 ## 核心概念
-1. 入口（entry）
-
-2. 输出（output）
-
-3. 转换器（loader）
-
-4. 插件（plugins）
 
 ### 入口（entry）
 webpack开始构建的地方，webpack通过入口文件，**递归**找出所有依赖文件。
@@ -32,26 +25,31 @@ module.exports = {
 
 >   多页开发时。如何优雅的遍历所有入口文件？
 
-    const reg = /.+\/([a-zA-Z]+-[a-zA-Z]+)(\.entry\.js|jsx$)/g;
-    const str = './books-add.entry.jsx';
-    const str1 = './books-add.entry.js';
-    
-    if(reg.test(str)) {
-    	console.log(RegExp.$1); // books-add
-    
-      const [dist, template] = RegExp.$1.split("-"); // 拿到 一级目录 及 模板名称
-    } else {
-      console.log('else')
-    }
+```js
+const reg = /.+\/([a-zA-Z]+-[a-zA-Z]+)(\.entry\.js|jsx$)/g;
+const str = './books-add.entry.jsx'; // 将 books 作为一级目录。将 add 作为模块名称。
+const str1 = './books-add.entry.js';
+
+if(reg.test(str)) {
+  console.log(RegExp.$1); // books-add
+
+  const [dist, template] = RegExp.$1.split("-"); // 拿到 一级目录 及 模板名称
+} else {
+  console.log('else')
+}
+```
 
 ### 输出（output）
 通知webpack在哪里输出所构建的模块，以及如何命名这些输出文件。
 ```js
+const isEnvProduction = process.env.NODE_ENV === 'production';
+
 module.exports = {
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'index.bundle.js'
+        // 生产环境使用 hash 值来命名文件。文件内容变则 hash 值变
+        filename: isEnvProduction ? 'static/js/[name].[contenthash:8].js' : 'static/js/bundle.js',
     }
 }
 ```
@@ -59,18 +57,17 @@ module.exports = {
 ### 转换器（loader）
 由于 webpack 自身只支持打包js文件，而 loader 能够让 webpack 处理那些非 js 文件，并且将它们转换为浏览器能识别的有效模块。
 
+当 use 多个 loader 时，loader 的执行顺序是**从后往前**的。 
+
 #### 基本使用
 ```js
 module.exports = {
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'index.bundle.js'
-    },
     module: {
         rules: [
             {
                 test: /\.css$/i, // 正则匹配
                 use: [
+                    'cache-loader', // 对当前 loader 的处理过程进程缓存    
                     'style-loader', 
                     {
                         loader: 'css-loader',
@@ -88,18 +85,39 @@ module.exports = {
 
 #### 编写同步loader
 loader就是一个函数，接收source（当前文件内容），处理后return一个新的文件内容。
-```js
-const loaderUtils = require('loader-utils');
 
-module.exports = function(source) {
-  // 获取loader中传递的options配置信息
-  const options = loaderUtils.getOptions(this);
-  
-  // 返回处理后的内容
-  // this.callback 是 Webpack 给 Loader 注入的 API，以方便 Loader 和 Webpack 之间通信.
-  this.callback(null, '/ *增加一个注释 */' + source);
-  
-  return; // 当使用 this.callback 返回内容时，该 Loader 必须返回 一个 undefined，让webpack知道是通过 callback 去输出内容。
+如下示例中将字符串文本先转化成 ast，通过遍历 ast 将 const 或 let 转化成 var，最后再返回字符串。
+```js
+'use strict';
+
+const loaderUtils = require('loader-utils'); // webpack 的一个工具类，通过一些方法配合 loader 处理文件
+const acorn = require('acorn'); // 转换 ast
+const walk = require('acorn-walk'); // 对 ast 进行操作
+const MagicString = require('magic-string'); // 魔法字符串，提供内置方法可以直接操作字符串。如 overwrite append 等方法
+
+module.exports = function (content) {
+    const options = loaderUtils.getOptions(this); // 配置文件 如上面的 options: {minimize: true,}
+
+    console.log('前置钩子', this.data.value); // 这里是 prev
+
+    const ast = acorn.parse(content); // 生成 ast
+    const code = new MagicString(content); // 用魔法字符串包裹
+
+    walk.simple(ast, {
+        // 指 ast 树中 type 为 VariableDeclaration 的变量声明部分
+        VariableDeclaration(node) {
+            const {start, kind} = node;
+            const len = kind === 'const' ? 5 : 4; // kind 有 const 或 let
+            
+            code.overwrite(start, start + len, 'var'); // const result = '🏮'; 取前5位即 const -> 转化成 var
+        },
+    });
+    return code.toString();
+};
+
+// loader 的前置钩子。在此 loader 执行前做一些操作
+module.exports.pitch = function (remainingRequest, prevRequest, data) {
+    data.value = '这里是 prev';
 };
 ```
 
@@ -130,10 +148,12 @@ webpack 会在内部对象上创建多个生命周期钩子，插件本质是一
 
 #### 基本使用
 ```js
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 module.exports = {
-  plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })]
+  plugins: [
+    new HardSourceWebpackPlugin(), // 对前一次构建结果进行缓存（内存或硬盘上），只有第二次打包时才能看出来效果
+  ]
 };
 ```
 
@@ -154,6 +174,8 @@ function createHtml(type, array) {
 
 class AfterHtmlPlugin {
     apply(compiler) {
+        // 通过 hooks 可以拿到 webpack 构建流程中的钩子函数
+        // 在这个钩子函数 compilation 上挂载 AfterHtmlPlugin
         compiler.hooks.compilation.tap('AfterHtmlPlugin', (compilation) => { // compilation 一次编译过程
             // 拿取 js、css
             HtmlWebpackPlugin.getHooks(compilation).beforeAssetTagGeneration.tapAsync(
@@ -163,7 +185,7 @@ class AfterHtmlPlugin {
                     this.jsArray = data.assets.js;
                     this.cssArray = data.assets.css;
 
-                    cb(null, data);
+                    cb(null, data); // 告诉 webpack 我做完了
                 }
             );
 
@@ -177,7 +199,7 @@ class AfterHtmlPlugin {
                     data.html = data.html.replace("<!-- injectjs -->", scriptString);
                     data.html = data.html.replace("<!-- injectcss -->", linkString);
 
-                    cb(null, data);
+                    cb(null, data); // 告诉 webpack 我做完了
                 }
             );
         });
@@ -208,18 +230,20 @@ module.exports = {
     splitChunks: {
       chunks: 'async', // 参数可能是：all，async和initial，这里表示拆分异步模块。
       minSize: 30000, // 如果模块的大小大于30kb，才会被拆分
-      minChunks: 1, // 引用次数大于1时该模块才会被拆分出来
       maxAsyncRequests: 5, // 按需加载时最大的请求数，意思就是说，如果拆得很小，就会超过这个值，限制拆分的数量。
       maxInitialRequests: 3, // 入口处的最大请求数
-      automaticNameDelimiter: '~', // webpack将使用块的名称和名称生成名称（例如vendors~main.js）
-      name: 'test', // 拆分块的名称 可自定义
+      automaticNameDelimiter: '~', // webpack将块的名称和文件名称组合（例如vendors~main.js）
+      
+      // 上面说的这些属性，都将作用于 cacheGroups
+    
+      // splitChunks 根据 cacheGroups 去分割
       cacheGroups: {
-        // 缓存splitchunks
         vendors: {
           name: 'vendors',
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10 // 优先级，数值越大，越先执行
+          test: /[\\/]node_modules[\\/]/, // 只筛选从 node_modules 文件夹下引入的模块，如 lodash 等
+          priority: -10 // 优先级。数值越大，则越优先分配，如果一个模块满足了多个缓存组，则会根据该字段去判断。
         },
+        // default 优先级低于 vendors            
         default: {
           minChunks: 2, // 一个模块至少出现2次引用时，才会被拆分
           priority: -20,
@@ -253,6 +277,19 @@ const os = require('os'); // 获取系统 cpu 内核数
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length }); // 创建线程池
 
 module.exports = {
+  module: {
+      rules: [
+          {
+            test: /\.(js|jsx)$/,
+            use: 'happypack/loader?id=jsx' // 该类型文件的处理交给 id 为 jsx 的线程
+          },
+        
+          {
+            test: /\.less$/,
+            use: 'happypack/loader?id=styles'
+          }                        
+      ]
+  },
   plugins: [
     new HappyPack({
       id: 'jsx',
@@ -264,20 +301,7 @@ module.exports = {
       threadPool: happyThreadPool,
       loaders: ['style-loader', 'css-loader', 'less-loader']
     })
-  ],
-  module: {
-      rules: [
-          {
-            test: /\.js$/,
-            use: 'happypack/loader?id=jsx'
-          },
-        
-          {
-            test: /\.less$/,
-            use: 'happypack/loader?id=styles'
-          }                        
-      ]
-  }
+  ]
 };
 ```
 
@@ -290,21 +314,21 @@ module.exports = {
 
 3. 如果在 require 模块时不写后缀名，默认 webpack 会尝试.js,.json 等后缀名匹配，配置 extensions，可以让 webpack 少做一点后缀匹配。
 
-4. 使用 cache-loader 启用持久化缓存。
+4. 使用 cache-loader 对特定 loader 的处理过程启用持久化缓存。
 
-    ```js
-    module.exports = {
-          module: {
-                rules: [
-                      {
-                        test: /\.js$/,
-                        use: ['cache-loader', 'babel-loader'],
-                        include: path.resolve('src'),
-                      },
-                ],
-          },
-    };
-    ```
+```js
+module.exports = {
+      module: {
+            rules: [
+                  {
+                    test: /\.js$/,
+                    use: ['cache-loader', 'babel-loader'],
+                    include: path.resolve('src'),
+                  },
+            ],
+      },
+};
+```
 
 5. 使用 noParse 属性，可以设置不必要的依赖解析，例如：我们知道 lodash 是无任何依赖包的，就可以设置此选项，缩小文件解析范围。
 
@@ -313,24 +337,25 @@ module.exports = {
 #### 开发环境优化
 1. 注意配置 mode。开发环境一般不需要代码压缩合并、单独提取文件等操作。
 
-2. 在开发阶段，可以直接引用 cdn 上的库文件，使用 externals 配置全局对象，避免打包。
+2. 使用 externals 配置全局对象，避免打包。
     
-    ```
-    大致可以理解为：
-    1. 如果需要引用一个库，但是不想让webpack打包它（减少打包的时间）
-    2. 并且又不影响我们在程序中以CMD、AMD、es6Module 等方式进行使用，需要用户环境来提供，那就可以通过配置externals。
-    3. 如下示例。总得来说，externals配置就是为了使import _ from 'lodash'这句代码，在本身不引入lodash的情况下，能够在各个环境都能解释执行。
-    ```
-    ```
-    import _ from 'lodash'; // 使用 lodash
-    externals: {
-          "lodash": {
-            commonjs: "lodash", // 如果我们的库运行在Node.js环境中，import _ from 'lodash'等价于const _ = require('lodash')
-            amd: "lodash", // 如果我们的库使用require.js等加载,等价于 define(["lodash"], factory);
-            root: "_" // 如果我们的库在浏览器中使用，需要提供一个全局的变量‘_’，等价于 var _ = (window._) or (_);
-          }
-    }    
-    ```
+```
+大致可以理解为：
+1. 如果需要引用一个库，但是不想让webpack打包它（减少打包的时间）
+2. 并且又不影响我们在程序中以CMD、AMD、es6Module 等方式进行使用，需要用户环境来提供，那就可以通过配置externals。
+3. 如下示例。总得来说，externals配置就是为了使import _ from 'lodash'这句代码，在本身不引入lodash的情况下，能够在各个环境都能解释执行。
+```
+```
+import _ from 'lodash'; // 在我们的组件中使用 lodash
+
+// webpack 中做如下配置
+externals: {
+      "lodash": {
+        commonjs: "lodash", // 如果我们的库运行在Node.js环境中，import _ from 'lodash'等价于const _ = require('lodash')
+        amd: "lodash", // 如果我们的库使用require.js等加载,等价于 define(["lodash"], factory);
+      }
+}    
+```
 
 3. 使用 speed-measure-webpack-plugin 插件显示打包速度分析，如我们可以看到处理 Loader、Plugin 分别用了多少时间，以便做专项优化。
 
@@ -339,15 +364,57 @@ module.exports = {
 #### 生产环境优化
 1. 静态资源上 cdn。
 
-    ```
-    output: {
-           publicPath: 'http://cdn.abc.com'  // 修改所有静态文件 url 的前缀（如 cdn 域名）
-    }
-    ```
+```
+output: {
+       publicPath: 'http://cdn.abc.com'  // 修改所有静态文件 url 的前缀（如 cdn 域名）
+}
+```
 
 2. 使用 tree shaking，只打包用到的模块，删除没有用到的模块，但是 tree-shaking有一个问题，无法识别到函数作用域中没有用的函数变量等，所以可以用webpack-deep-scope-plugin。
 
-3. 配置 scope hoisting 作用域提升，将多个函数合并为一个函数去执行，减少了跨作用域互相调用的情况。
+3. scope hoisting 作用域提升，使打包出来的文件更小运行更快，减少了跨作用域互相调用的情况。尽可能将打散的模块合并到一个函数中，前提是不能造成代码冗余。 **因此只有那些被引用了一次的模块才能被合并**。如下：
+
+```js
+// 启用 scope hoisting。
+// ① production模式下自动开启。
+// ② 如果开发模式下想使用可以手动配置，webpack 内置了该插件。
+
+module.exports = {
+    plugins: [
+        new webpack.optimize.ModuleConcatenationPlugin()
+    ]
+}
+```
+```js
+// main.js
+export default "hello~";
+
+// index.js
+import str from "./main.js";
+console.log(str);
+
+
+// 打包后代码分析
+
+// 未开启 hoisting。会创建两个闭包，通过 webpack 封装的 exports 和 require 进行导出引入
+[
+    (function (module, __webpack_exports__, __webpack_require__) {
+        var __WEBPACK_IMPORTED_MODULE_0__main_js__ = __webpack_require__(1);
+        console.log(__WEBPACK_IMPORTED_MODULE_0__main_js__["a"]);
+    }),
+    (function (module, __webpack_exports__, __webpack_require__) {
+        __webpack_exports__["a"] = ('hello~');
+    })
+]
+
+// 开启 hoisting。 将引入的内容直接注入到模块中
+[
+  (function (module, __webpack_exports__, __webpack_require__) {
+    var main = ('hello~');
+    console.log(main);
+  })
+]
+```
 
 4. 使用 hard-source-webpack-plugin 插件对整个工程**开启缓存**。
 
@@ -395,7 +462,7 @@ module.exports = {
 ```
 
 ## webpack 构建流程
-上大图！！图片摘自 [前端日志](https://lmjben.github.io/blog/)！
+图片摘自 [Webpack 系列使用总结](https://lmjben.github.io/blog/devops-webpack.html)！
 
 <img src='/img/webpack_1_1.png' width=550 />
 
@@ -445,6 +512,20 @@ const merge = require('webpack-merge');
 const webpackConfig = {};
 
 module.exports = merge(_mergeConfig, webpackConfig);
+```
+
+### hard-source-webpack-plugin
+缓存技术，对前一次构建结果进行缓存，所以只有第二次打包时才能看出效果。
+
+第一次构建时，插件就会默认把缓存结果（我理解是每个文件会有一个 hash 值，通过 hash 值去对应结果）存到内存或硬盘中，第二次构建的时候再取出缓存使用。
+```js
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+
+module.exports = {
+    plugins: [
+        new HardSourceWebpackPlugin()
+    ]   
+}
 ```
 
 ## 参考链接
