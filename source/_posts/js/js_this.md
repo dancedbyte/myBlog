@@ -22,6 +22,7 @@ index_img: /img/js_this.jpg
     const user = {
            name: "draw",
            sayHi() {
+                // 如 arrow 没有自己的 this。就向上找 sayHi 中的this。sayHi 的 this 指向的是 user
                 const arrow = () => alert(this.name);
                 arrow();
            }
