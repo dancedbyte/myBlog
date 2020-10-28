@@ -21,7 +21,7 @@ index_img: /img/react_2.jpg
 
 #### 传统 class 传递一个函数
 
-```
+```jsx
 class Index extends React.Component{    
   state = {
     num: 1
@@ -132,4 +132,49 @@ const ComputeComponent = () => {
     </div>
   );
 };
+```
+
+### useReducer
+接受三个参数：
+- reducer：接收当前组件的 state 和触发动作的 action，计算并返回最新的state。
+- initialState：初始化 state 数据。
+- initialAction：可选。在初始渲染期间应用的初始动作。实际没用过，等用过再做分析。
+
+返回两个参数：
+- state：更新后最新的的 state 数据。
+- dispatch：派发具体更新 state 的动作 action，reducer 进行相应处理。
+
+```js
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+```jsx
+const initialState = {count: 0}; // 定义初始 state
+
+// 处理 state 的 reducer 函数
+function reducer(state, action) {
+    switch (action.type) {
+        case 'increment':
+          return {...state, count: state.count + 1};
+        case 'decrement':
+           return {...state, count: state.count - 1};
+        default:
+            throw new Error();
+    }
+}
+
+function Counter() {
+    // 返回 最新的 state 和 dispatch 函数
+    const [state, dispatch] = useReducer(reducer, initialState);
+    return (
+        <>
+            // useReducer 会根据 dispatch 的 action，返回最终的 state，并触发重新渲染。
+            Count: {state.count}
+
+            // dispatch 用来派发一个 action（reducer 中的 action)，用来触发 reducer 函数，更新最新的状态。
+            <button onClick={() => dispatch({type: 'increment'})}>+</button>
+            <button onClick={() => dispatch({type: 'decrement'})}>-</button>
+        </>
+    );
+}
 ```
