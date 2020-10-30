@@ -61,7 +61,7 @@ console.log(a); // Error a is not defined
 ## 如下输出？
 1. delete 是不能删除从原型上继承而来的属性。
 
-2. 如果用 delete 删除数组的某个元素，则数组长度不会变，只会将该元素变成 undefined
+2. 如果用 delete **删除数组**的某个元素，则数组长度不会变，只会将该元素变成 undefined
 
 ```js
 var company = {
@@ -78,8 +78,44 @@ console.log(yideng.address); // beijing
 ```js
 x = 1;
 var output = (function(){
-    delete x;
+    delete x; // 变量 x 沿作用域向上查找，找到全局的 x
     return x; // 报错 全局上的 x 已经被删除
 })();
 console.log(output);
+```
+
+## 如下输出？
+```js
+var foo = function bar(){ return 12; };
+
+console.log(typeof foo()); // number
+console.log(typeof bar()); // 报错。将函数赋给变量 foo。所以函数 bar 名称就会失效，相当于匿名函数
+```
+
+## 创建一个装饰者 spy(func)
+spy(func)，应该返回一个包装器，该包装器将所有对函数的调用保存在其 calls 属性中。
+```js
+// work 是一个任意的函数或方法
+function work(a, b) {
+    alert(a + b); // 分别弹出 3 9
+}
+function spy(func) {
+    function inner(...args) {
+        func.call(null, ...args);
+
+        inner.calls.push(args); // 将调用函数的参数偷偷保留了下来，所以 spy 也叫间谍装饰者，在执行传入函数的同时保留了参数。
+    }
+    inner.calls = [];
+
+    return inner;
+}
+
+work = spy(work);
+
+work(1, 2);
+work(4, 5);
+
+for (let args of work.calls) {
+    console.log(args.join()); // "1, 2",    "4, 5"
+}
 ```
