@@ -52,6 +52,19 @@ alert(+user); // hint: number -> 1000
 alert(user + 500); // hint: default -> 1500
 ```
 
+重写 Symbol.toPrimitive 使之能打印出 1。
+
+```js
+var num = 1;
+var a = {
+    // 创建立即执行函数，并返回一个自增的函数。
+	[Symbol.toPrimitive]: (i => () => ++i)(0)
+};
+if(a == 1 && a== 2 && a== 3) {
+ 	console.log(1); 
+}
+```
+
 ## 可迭代对象
 1. 可以应用 for..of 的对象被称为 可迭代的。
 

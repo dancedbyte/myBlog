@@ -119,3 +119,57 @@ for (let args of work.calls) {
     console.log(args.join()); // "1, 2",    "4, 5"
 }
 ```
+
+## 执行结果是什么？
+```js
+let a = 1;
+function test(a) {
+  a = 12; // 当传入基本数据类型时，内部操作形参不会对传入变量产生影响
+}
+test(a); // 传入的 a 是基本数据类型
+console.log(a); // 1
+```
+
+```js
+let a = {};
+function test(a) {
+  a.name = 'draw'; // 传入复杂数据类型时，内部操作会修改掉传入的变量
+}
+test(a); // 复杂数据类型
+
+console.log(a); // {name: "draw"}
+```
+
+## 如下打印结果？
+```js
+function Foo(){
+    // Foo 的属性方法 a
+    Foo.a = function(){
+        console.log(1);
+    }
+    this.a = function(){
+        console.log(2)
+    }
+}
+ 
+Foo.prototype.a = function(){
+    console.log(3);
+}
+
+// Foo 的静态方法 a 
+Foo.a = function(){
+    console.log(4);
+}
+  
+Foo.a(); // 4
+let obj = new Foo();
+obj.a(); // 2
+Foo.a(); // 1
+
+/*
+分析：
+   ① Foo.a() 这个是调用 Foo 函数的静态方法 a，虽然 Foo 中有优先级更高的属性方法 a，但 Foo 此时没有被调用，所以此时输出 Foo 的静态方法 a 的结果：4
+   ② 实例化后，此时 Foo 函数内部的属性方法初始化，原型链建立。有两个 a 方法，分别是内部 this 上的方法和原型上的方法。则内部 this 上的优先级高。
+   ③ Foo.a() 根据第2步可知 Foo 函数内部的属性方法已初始化，覆盖了同名的静态方法，所以输出：1
+*/
+```
