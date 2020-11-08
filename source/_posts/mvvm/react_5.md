@@ -205,6 +205,7 @@ export default function createStore(
 import compose from './compose.js';
 
 const applyMiddleware = function (...middlewares) {
+    // oldCreateStore 指原有的 createStore 方法
     return function (oldCreateStore) {
         return function (reducer, initState) {
             const store = oldCreateStore(reducer, initState); // 先创建原有 store
@@ -236,6 +237,7 @@ export default function compose(...funcs) {
         return funcs[0];
     }
 
+    // reduce 是将第一个经过中间件处理后的 dispatch 作为结果，传给下一个中间件
     return funcs.reduce((a, b) => (...args) => a(b(...args))); // 这里 args 指的是传入的旧的 dispatch
 }
 ```
@@ -271,7 +273,7 @@ function boundActionCreator(actionCreator, dispatch) {
 }
 
 export default function bindActionCreators(actionCreators, dispatch) {
-    const boundActionCreators = {};
+    const boundActionCreators = {}; // 将 action 与 dispatch 对应  
     const keys = Object.keys(actionCreators);
 
     keys.forEach(key => {
@@ -280,7 +282,7 @@ export default function bindActionCreators(actionCreators, dispatch) {
         }
     });
 
-    return boundActionCreators; // 返回
+    return boundActionCreators; // 返回对应关系，当调用 actions.funcName 自动去触发 dispatch。使用方式可见 index.html
 }
 ```
 
@@ -303,9 +305,34 @@ export { changeInfo };
 
 ### middlewares
 可自定义中间件，通过包装 dispatch，丰富完善 redux 的功能。
+
+```js
+// 当通过 applyMiddleware 依次添加下面两个中间件时，执行顺序是从右往左的。
+// 所以打印顺序如下：prev state ①、prev state ②、next state ③、next state ④
+// 每个中间件会执行两次，叫作洋葱模型。
+
+applyMiddleware(
+    exceptionMiddleware,
+    loggerMiddleware
+);
+```
+
+```js
+// exceptionMiddleware.js
+
+// 通过上面 applyMiddleware 包装后，exceptionMiddleware 的 next 指向下一个中间件 loggerMiddleware
+const exceptionMiddleware = (store) => (next) => (action) => {
+  console.log('prev state ①', store.getState()); // 之前的 state
+  next(action);
+  console.log('next state ④', store.getState()); // 经过 dispatch 处理后的 state
+};
+export default exceptionMiddleware;
+```
+
 ```js
 // loggerMiddleware.js
 
+// loggerMiddleware 的 next 指向真正的 store 中的 dispatch 方法
 const loggerMiddleware = (store) => (next) => (action) => {
   console.log('prev state ②', store.getState());  
   
@@ -318,29 +345,6 @@ const loggerMiddleware = (store) => (next) => (action) => {
   console.log('next state ③', store.getState());
 };
 export default loggerMiddleware;
-```
-
-```js
-// exceptionMiddleware.js
-
-// dispatch 最后才接收一个 action
-const exceptionMiddleware = (store) => (next) => (action) => {
-  console.log('prev state ①', store.getState()); // 之前的 state
-  next(action);
-  console.log('next state ④', store.getState()); // 经过 dispatch 处理后的 state
-};
-export default exceptionMiddleware;
-```
-
-```js
-// 当通过 applyMiddleware 依次添加上面两个中间件时，执行顺序是从右往左的。
-// 所以打印顺序如下：prev state ①、prev state ②、next state ③、next state ④
-// 每个中间件会执行两次，叫作洋葱模型。
-
-applyMiddleware(
-    exceptionMiddleware,
-    loggerMiddleware
-);
 ```
 
 ### reducers
@@ -368,17 +372,47 @@ export default function infoReducer(state = initState, action) {
 
 ## 异步处理
 
-## React-Redux
+### redux-chunk
+redux 规定在使用 dispatch 方法派发一个 action 给 reducer 的时候，这个过程是同步的。一旦 reducer 获取到 action，就一路执行，直到 state 更新。
+
+当然这也没什么问题，但是随着业务逻辑的增加，我们可能需要将组件 ComponentDidMount 函数中大量的 ajax 请求放到每个 action 中去执行，以此来抽离组件的逻辑。
+
+这个时候就需要 redux-chunk 这种处理异步 action 的中间件来帮我们完成，它允许 action 返回函数，并且返回函数接受 dispatch 作为参数，当异步有了结果再通过 dispatch 去派发 action。
+
+```js
+// 创建 store
+import thunk from 'redux-thunk';
+
+const store = createStore(reducer, applyMiddleware(thunk))
+
+// action
+function changeInfo(id) {
+    return function(dispatch) {
+      axios.get(`/api/getUserInfo/${id}`)
+        .then(res => {
+            dispatch({
+                type: 'CHANGE_INFO',
+                info: res?.data?.info || '',       
+            })
+        })
+    }
+}
+
+// 调用
+actions.changeInfo(24);
+```
+
+## react-redux
 1. 我们一般会在项目应用的外层包括一层 Provider，它其实只是一个外层容器，原理是通过 react 的 Context API 来实现的。
 
    同时需要给 Provider 设置好 store，Provider 的作用就是通过配合 connect 来达到组件跨层级传递数据，那么整个项目都可以直接获取这个store。
     
 2. connect 的作用是**连接 React 组件与 Redux 中的 store**，它在我们写的组件外包了一层。它接收 store 里面的 state 和 dispatch，经过 reducer 处理后以 props 属性形式传给我们的容器组件。
 
-3. 一般 connect 常用的接受的参数有 2 个，如下：
+3. 一般 connect 接受的参数有 3 个，如下：
 
     mapStateToProps: 将 store 里的 state(数据源) 绑定到指定组件的props中，即当前组件通过 props 可以获取到 store 中的 state 数据。
     
     mapDispatchToProps: 将 store 里的 action(操作数据的方法) 绑定到指定组件的 props 中。
-
-TODO connect 内部如何实现
+    
+    mergeProps：上面说的两个参数所产生的数据最终都会映射到组件的 props 中，mergeProps 就是来做这件事的。**通常情况下，可以不传这个参数**，connect 就会使用 Object.assign 替代该方法。
