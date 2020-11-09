@@ -181,8 +181,6 @@ function FiberNode() {
 ```
 
 # Scheduler 调度器
-// React 借鉴了浏览器的requestIdleCallback接口，当浏览器有剩余时间时通知执行。
-
 并且可以调度任务的优先级，高优先级任务优先进入 Reconciler。
 
 ## 优先级划分

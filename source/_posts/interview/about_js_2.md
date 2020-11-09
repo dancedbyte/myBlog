@@ -22,7 +22,7 @@ function _new(Func, ...args) {
 }
 ```
 
-## JSON.stringify 和 JSON.parse 实现原理
+## 实现 JSON.stringify 和 JSON.parse
 1. Boolean | Number| String 类型会自动转换成对应的原始值
 2. undefined、任意函数以及symbol，会被忽略（出现在非数组对象的属性值中时），或者被转换成 null（出现在数组中时）
 3. 不可枚举（enumerable为false）的属性、循环引用的属性都会被忽略
@@ -168,9 +168,7 @@ const en = new English('ghm', 24, 'english');
 en.introduce(); // ghm english
 ```
 
-## 写一个通用的柯里化和反柯里化函数
-
-### 柯里化
+## 通用的柯里化函数
 函数柯里化，是固定部分参数，返回一个接受剩余参数的函数。
 
 目的是为了缩小适用范围，创建一个针对性更强的函数。
@@ -187,7 +185,7 @@ function curry(fn, ...args) {
     if(len > allArgs.length) {
       return curry.call(this, fn, ...allArgs);
     } else {
-      return fn.call(this, ...allArgs);
+      return fn.call(this, ...allArgs); // 参数够了 直接执行 fn
     }
   }
 }
@@ -231,7 +229,7 @@ function add(...args) {
   }
 
   fn.sumOf = function() {
-    return fn.toString();
+    return fn.toString(); // 执行 fn.toString 即可
   }
   fn.toString = function() {
     return args.reduce((prev, cur) => prev + cur)
@@ -239,19 +237,6 @@ function add(...args) {
   
   return fn;
 }
-```
-
-### 反柯里化
-扩大函数的是适用范围，创建一个应用范围更广的函数。
-```js
-Function.prototype.uncurring = function() {
-  const self = this;
-  
-  return function() {
-    const obj = Array.prototype.shift.call(arguments);
-    return self.apply(obj, arguments);
-  };
-};
 ```
 
 ## 实现 compose 组合函数

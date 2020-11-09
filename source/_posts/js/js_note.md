@@ -185,3 +185,17 @@ function f(n, a = 1, b = 1) {
 const res = trampoline(f(6));
 console.log(res); // 8 
 ```
+
+## js eval 替代方案
+js 原生提供的 eval 会有严重的内存泄漏问题。因为 eval 函数支持传入表达式并计算，那么这个表达式可能会产生什么副作用，所以不敢回收 eval。
+
+如有些需求，需要解析用户输入的 js。或我们自己需要用 eval 做大量计算。
+```js
+function new_eval(arg) {
+  return new Function('return ' + arg)(); // 创建一个 Function 对象。
+}
+
+new_eval(console.log(1)); // 1
+new_eval(2 + 3); // 5
+new_eval('2 + 3'); // 5
+```
