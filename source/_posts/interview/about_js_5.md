@@ -21,13 +21,13 @@ console.log(a); // 先输出 0
 ```
 
 ## 如下执行结果？
-
+当函数名称与内部变量名称重名时，则变量永远指向该函数。
 ```js
 var a = 1;
 
 (function a() {
     a = 2;
-    console.log(a); // IIFE 创建一个独立作用域，当函数名称与内部变量名称冲突，就会永远执行函数本身；
+    console.log(a); // IIFE 创建一个独立作用域，当函数名称与内部变量名称一样时，会永远指向函数本身；
     /*
         ƒ a() {
             a = 2;
@@ -37,21 +37,11 @@ var a = 1;
 })();
 ```
 
-**变形 1**
-```js
-var a = 1;
-
-(function b() {
-    a = 2;
-    console.log(a); // 沿作用域向上查找，找到 2 
-})();
-```
-
 ## 如下输出？
-
+变量赋值顺序从右向左。
 ```js
 (function () {
-    var a = b = 5; // b 变成了全局变量
+    var a = b = 5; // 相当于 b = 5; 则 b 变成了全局变量
 })();
 
 console.log(b); // 5
@@ -121,10 +111,11 @@ for (let args of work.calls) {
 ```
 
 ## 执行结果是什么？
+当（基本类型）变量 和 参数重名时，内部对参数进行操作是否会影响到该变量。
 ```js
 let a = 1;
 function test(a) {
-  a = 12; // 当传入基本数据类型时，内部操作形参不会对传入变量产生影响
+  a = 12; // 当（基本类型）变量 和 参数重名时，内部操作形参不会对变量产生影响
 }
 test(a); // 传入的 a 是基本数据类型
 console.log(a); // 1
@@ -133,7 +124,7 @@ console.log(a); // 1
 ```js
 let a = {};
 function test(a) {
-  a.name = 'draw'; // 传入复杂数据类型时，内部操作会修改掉传入的变量
+  a.name = 'draw'; // 当（负责类型）变量 和 参数重名时，内部操作形参会对变量产生影响
 }
 test(a); // 复杂数据类型
 
@@ -141,6 +132,7 @@ console.log(a); // {name: "draw"}
 ```
 
 ## 如下打印结果？
+考察静态方法 和 属性方法的优先级，如果构造函数被实例化，则属性方法的优先级高于静态方法。
 ```js
 function Foo(){
     // Foo 的属性方法 a
@@ -167,9 +159,65 @@ obj.a(); // 2
 Foo.a(); // 1
 
 /*
-分析：
    ① Foo.a() 这个是调用 Foo 函数的静态方法 a，虽然 Foo 中有优先级更高的属性方法 a，但 Foo 此时没有被调用，所以此时输出 Foo 的静态方法 a 的结果：4
    ② 实例化后，此时 Foo 函数内部的属性方法初始化，原型链建立。有两个 a 方法，分别是内部 this 上的方法和原型上的方法。则内部 this 上的优先级高。
    ③ Foo.a() 根据第2步可知 Foo 函数内部的属性方法已初始化，覆盖了同名的静态方法，所以输出：1
 */
 ```
+
+## 如下输出？
+考察 this 指向、变量提升、运算符号优先级。
+```js
+function fn() {
+    // getValue 没有用 var 声明，所以实际上是将外层的 getValue 给修改了
+    getValue = function () {
+        console.log(1);
+    };
+    return this; // 定义时 This 是确定不了的，需要看是谁调用的。
+}
+
+fn.getValue = function () {
+    console.log(2);
+};
+
+var getValue = function () {
+    console.log(4);
+};
+
+function getValue() {
+    console.log(5);
+}
+
+// 函数声明，变量会提升。所以 4 会覆盖掉 5
+getValue(); // 4
+
+//  有()则先执行了 fn 方法，修改了全局的 getValue 方法，而 fn 内部返回了 this。这里调用的话 this 指向了 window。即 window.getValue 输出 1
+fn().getValue(); // 1
+
+// 在上一步中，因为先执行了 fn 函数，全局的 getValue 已经被修改了，所以输出 1
+getValue(); // 1
+
+// 考察运算符 new 和 . 的优先级。相当于执行了 new (fn.getValue())
+new fn.getValue(); // 2
+```
+
+## 如下输出？
+考察 import 与 require 的区别。
+
+import 是编译阶段就先去加载了。而 require 是运行时才去加载。
+```js
+// index.js
+console.log('running index.js');
+import { sum } from './sum.js';
+console.log(sum(1, 2));
+
+// sum.js
+console.log('running sum.js');
+export const sum = (a, b) => a + b;
+
+
+/*
+    所以 import 的话：running sum.js、running index.js、3
+    如果 require 的话：running index.js、running sum.js、3
+*/
+``` 

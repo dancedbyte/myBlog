@@ -19,6 +19,8 @@ index_img: /img/react_2.jpg
 - 依赖项：需要依赖的参数，没有就是一个空数组 []。
 - 返回值：返回一个 memoized 回调函数。在依赖参数不变的情况下，返回的回调函数是同一个引用地址。一旦参数改变，则 useCallback 会自动返回一个新的函数（引用地址改变)。
 
+>   可以通过 React.memo + useCallback 来模拟 class 的 shouldComponentUpdate.
+
 #### 传统 class 传递一个函数
 
 ```jsx
@@ -126,7 +128,7 @@ const ComputeComponent = () => {
 
   return (
     <div>
-      <div>{computeValue}</div>
+      <div>{computeValueUseMemo}</div>
       <div onClick={handleSetCount}>addCount {count} </div>
       <div onClick={handleChangeNum}> add changeNum {changeNum}</div>
     </div>
