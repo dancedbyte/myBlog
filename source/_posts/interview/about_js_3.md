@@ -104,7 +104,7 @@ console.log({} == {}); // false
 
 ## 转换特殊情况
 转换为布尔值时的假值有：undefined、null、空字符串、0、-0、NaN。其余如 {}、[] 都是真值
-```js
+```
 console.log([] == ![]) // true
 (1) [] == !Boolean([])
 (2) [] == false
@@ -153,28 +153,50 @@ console.log(1 - - '2'); // 3 相当于 1 - (-2)
 console.log(-'1' - '2'); // -3 相当于 -1 - 2
 ```
 
-## 补充
-1. 任何数字与NaN相加都会变成NaN
+## 补充（重要！！）
+1. 当转化为基础数据类型后，不再向下进行转换！
+
+```js
+let a = [];
+let b = "0";
+
+// 这两种是容易出错的地方。
+
+// ①
+console.log(a == 0); // true
+// '' == 0     虽然都转化为基本数据类型了，但是基本类型还是不同的，则进行 Number 转化为数字。所以返回 true
+
+// ②
+console.log(a == b); // false
+// '' = '0'    这时候由于惯性思维很容易想他们可能还需要进行 Number 转化。其实是不需要了，因为他们都是基本数据类型且类型一致，直接返回 false 
+```
+
+2. 任何数字与NaN相加都会变成NaN
+
 ```
 100 + 1 + NaN // NaN
 ```
 
-2. Number(null) 与 Number(undefined)
+3. Number(null) 与 Number(undefined)
+
 ```
 Number(null) => // 0
 Number(undefined) => // NaN
 ```
 
-3. 字符串与 []、 null、 数字、undefined 等相加时
+4. 字符串与 []、 null、 数字、undefined 等相加时
+
 ```
 '123' + [] + null + undefined + 10 => '123' + '' + 'null' + '10' // 123nullundefined10
 ```
+
 ```js
 '123' + [] + Number(undefined) + null + 10 // 123NaNnull10
 ```
 
 
-4. parseInt(val)转化时 会先把val转化为字符串
+5. parseInt(val)转化时 会先把val转化为字符串
+
 ```
 parseInt(null); // parseInt('null') => NaN
 ```

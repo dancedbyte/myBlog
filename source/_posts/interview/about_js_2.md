@@ -368,34 +368,109 @@ let timer = setTimeout(function fn(){
 ```
 
 ## 模拟事件监听触发
+注意一个事件可以绑定很多个回调函数。
 ```js
-class EventEmitter{
-  constructor() {
-    this.map = new Map();
-  }
-  
-  // 监听
-  addEventLister(type, fn) {
-    const _map = this.map;
-    
-    if(_map.has(type)) {
-      _map.set(_map.get(type), fn)
-    } else {
-      _map.set(type, fn);
+class EventEmitter {
+    constructor() {
+        this.map = new Map(); // 存储所有事件
     }
-  }
-  
-  // 触发
-  trigger(type, ...args) {
-    const fn = this.map.get(type);
-    
-    return fn.call(this, ...args);
-  }
-};
+
+    // 监听
+    addEventLister(type, fn) {
+        const _map = this.map;
+
+        if (_map.has(type)) {
+            _map.set(type, [..._map.get(type), fn]); // 存在该事件则合并新添加进来的回调
+        } else {
+            _map.set(type, [fn]); // 以数组形式存储，因为可以给一个事件绑定很多回调
+        }
+    }
+
+    // 触发
+    trigger(type, ...args) {
+        const fns = this.map.get(type);
+
+        fns.forEach(fn => {
+            fn.call(this, ...args); // 依次执行回调
+        });
+    }
+}
+
 const emiter = new EventEmitter();
 
 emiter.addEventLister('say', name => {
-  console.log(name);
+    console.log(name); // hello 
 });
-emiter.trigger('say', 'ghm');
+emiter.addEventLister('say', name => {
+    console.log(name + 'draw'); // hello draw
+});
+emiter.trigger('say', 'hello');
+```
+
+## 手写防抖、节流
+防抖：在事件被触发 n 秒后再执行回调函数，如果在这 n 秒内又被触发，则重新计时。
+
+    应用场景：当校验名称在数据库中是否存在时，通过防抖来减少请求次数。
+    
+节流：如果在 n 秒内多次触发事件，那么只有一次回调函数会执行，即回调函数总是会按规律的以 n 秒间隔去执行。
+
+    应用场景：window 的 onresize 事件，不断的调整浏览器窗口大小会不断的触发回调事件，通过节流来限制（每 n 秒才会去执行回调）。    
+
+### 防抖
+```js
+// 模拟ajax请求
+function ajax(e) {
+    console.log(e.target.value);
+    // this.props.ajax.post('/getParams', params);
+}
+
+// 防抖函数
+function debounceFunc(fun, delay) {
+    let timer = null;
+
+    return function (...args) {
+        // 如果存在，则清除定时器。
+        // 因为防抖是需要在停止事件触发后的 delay 才去执行回调。如果在 delay 内又去触发了，则不执行然后清除定时器。
+        if(timer) clearTimeout(timer);
+
+        timer = setTimeout(() => {
+            fun.call(this, ...args)
+        }, delay)
+    }
+}
+
+const name = document.getElementById('name');
+
+// 绑定input事件，当value改变时，会出发input事件
+name.addEventListener('input', debounceFunc(ajax, 1000));
+```
+
+### 节流
+通过剩余时间来保证第一次会立即执行，通过定时器保证停止事件触发后还能执行一次回调函数。
+```js
+function throttle(func, delay) {
+    let timer = null;
+    let startTime = Date.now();
+
+    return function (...args) {
+        const curTime = Date.now();
+        const remaining = delay - (curTime - startTime); // 剩余时间
+
+        clearTimeout(timer);
+
+        // 第一次执行时，remaining 是一定小于 0 的，保证了立即执行。
+        if (remaining <= 0) {
+            func.call(null, ...args);
+            startTime = Date.now(); // 重新计算 开始时间
+        } else {
+            timer = setTimeout(func, remaining); // 最后一次因为还剩一个计时器，所以最后还会执行一次
+        }
+    }
+}
+
+function handle() {
+    console.log(Math.random());
+}
+
+window.addEventListener('scroll', throttle(handle, 1000));
 ```

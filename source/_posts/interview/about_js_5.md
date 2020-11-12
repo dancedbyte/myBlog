@@ -220,4 +220,44 @@ export const sum = (a, b) => a + b;
     所以 import 的话：running sum.js、running index.js、3
     如果 require 的话：running index.js、running sum.js、3
 */
-``` 
+```
+
+## 如下输出？
+实例上方法的优先级是高于原型链上的方法的。且通过等号 = 声明的方法是被直接挂载到实例上的。
+
+```js
+class Yd {
+    static str = 'static str'; // 静态属性
+
+    // 通过等号 = 声明，表示这个方法是直接挂载到实例上的。它的优先级高于原型链上方法的优先级。
+    sayStr = () => {
+        throw new Error('Need to implement');
+    }
+}
+
+class Student extends Yd {
+    constructor() {
+        super();
+    }
+
+    // 原型链上的方法
+    sayStr() {
+        console.log(Student.str);
+    }
+}
+
+const laoyuan = new Student();
+console.log(Student.str); // static str
+laoyuan.sayStr(); // throw new Error('Need to implement'); 读取时，会先去实例上找，没有的话再去原型链上找。
+```
+
+## 执行结果？
+正则的 test 方法会强制将传入的数据转化为：字符串
+
+```js
+const lowerCaseOnly =  /^[a-z]+$/;
+
+console.log(lowerCaseOnly.test('draw')); // true
+console.log(lowerCaseOnly.test(null)); // -> 'null' true
+console.log(lowerCaseOnly.test()); // -> 'undefined' true
+```

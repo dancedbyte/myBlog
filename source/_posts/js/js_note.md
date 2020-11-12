@@ -199,3 +199,14 @@ new_eval(console.log(1)); // 1
 new_eval(2 + 3); // 5
 new_eval('2 + 3'); // 5
 ```
+
+## 获取一个文件在项目内的完整位置
+注意是非 node 环境。当然 node 环境可以用 __dirname 来获取。
+
+可以利用 es2020 新特性 import.meta.url 来获取。但是它只能在**模块**内使用。
+```
+// 声明 type="module"
+<script type="module">
+    console.log(import.meta.url);
+</script>
+```
