@@ -851,3 +851,21 @@ function completeWork() {
     }
 }
 ```
+
+## commit 渲染器
+负责将变化的组件渲染到⻚⾯上。主要分为三个阶段：DOM 操作前、执行 DOM 操作、DOM 操作后。
+
+### commitBeforeMutationEffects
+- 处理需要删除的 fileNode 的 autoFocus blur 等逻辑，并递归处理子节点
+- 调⽤ getSnapshotBeforeUpdate ⽣命周期
+- 调用 useEffect，因为 useEffect 可以代替 DidMount/DidUpdate。
+
+### commitMutationEffects
+- 遍历finishedWork，根据不同的 flag，删除、创建、更新等执⾏不同的 DOM 操作。
+- 对于删除的组件，会执⾏componentWillUnMount⽣命周期
+
+### recursivelyCommitLayoutEffects
+- 在这个阶段前 current tree 也发⽣变化了，指向了最新构建的 workInProgress tree
+- 因为 DOM 渲染完了，这时候可以赋值 ref 了。
+- 处理ReactDom.render 回调
+
