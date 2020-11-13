@@ -64,11 +64,13 @@ export default Home;
 ```
 
 ## hooks 如何在 setTimeout 中支持批量更新
-react 在 setTimeout、addEventListener 等非 react 内部事件中是不支持 setState 合并的，但是可以通过 react-dom 暴露出来的 unstable_batchedUpdates 来手动合并更新。来避免函数没有意义的被创建多次。
+react 在 setTimeout、addEventListener 等非 react 内部事件中是不支持 setState 合并的。
+
+但是可以通过 react-dom 暴露出来的 unstable_batchedUpdates 来手动合并更新。来避免函数没有意义的被创建多次。
 
 ```js
 import {unstable_batchedUpdates as batchedUpdates} from 'react-dom';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 const App = () => {
     const [name, setName] = useState('draw');

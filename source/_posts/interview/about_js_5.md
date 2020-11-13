@@ -261,3 +261,18 @@ console.log(lowerCaseOnly.test('draw')); // true
 console.log(lowerCaseOnly.test(null)); // -> 'null' true
 console.log(lowerCaseOnly.test()); // -> 'undefined' true
 ```
+
+## 如下输出？
+变量的查找是在**函数定义**的地方去开始查找的。直接打印 length 指的是页面中 iframe 的数量。
+```js
+function foo(){
+    console.log(length); // 页面中 iframe 数量为0
+}
+function bar(){
+      var length = "京程一灯";
+      foo(); // 虽然是在 foo 函数里面去调用的 bar。但是 bar 中变量的查找是在 bar 函数内去找的 
+}
+bar();
+```
+
+## 
