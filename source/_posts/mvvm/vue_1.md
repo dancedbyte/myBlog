@@ -109,8 +109,10 @@ Vue.component("counter",{
         }
     }
     ```
+4. 属性必须在 data 属性上存在，vue 才能通过 defineProperty 将它转化为响应式的，这也就造成了 vue **无法检测**到对象属性的添加或删除。
 
-4. 获取 key 会触发 defineProperty 的 get。设置 key 会触发 defineProperty 的 set。
+   所以 vue 提供了 Vue.set(object, propertyName, value) / vm.$set(object, propertyName, value) **来解决这一问题**。 
+
 
 ### Observer
 1. **把数据处理成响应式数据**。一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。

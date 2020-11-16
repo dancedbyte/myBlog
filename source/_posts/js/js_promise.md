@@ -191,6 +191,32 @@ Promise.myAll([p1, p2, p3])
     .catch(err => console.log(err))
 ```
 
+## Promise.all 演变
+Promise.all 中任何一个 Promise 出现错误的时候都会执行 reject，**导致其它正常返回的数据也无法使用。如何解决**？
+
+1. 把单个 reject 操作换成 resolve(new Error("自定义的error"))
+
+2. 在单个的 catch 中对失败的 promise 请求做处理，如进行重新请求等。
+
+3. 使用 Promise 提供的 api。Promise.allSettled，他可以返回所有 promise 的结果是失败还是成功，以及具体的返回数据。
+   
+```js
+const promises = [
+    fetch('/api1'),
+    fetch('/api2'),
+    fetch('/api3'),
+];
+  
+Promise.allSettled(promises)
+    .then(res => res.forEach((it) => console.log(it.status)));
+
+/*
+"fulfilled"
+"fulfilled"
+"rejected"
+*/
+```
+
 ## 实现允许 max 个请求并发的函数
 该函数可以批量请求数据，所有的url地址在urls参数中，同时可以通过max参数控制请求的并发度，当所有请求结束之后，需要执行callback回调函数。
 ```js

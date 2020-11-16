@@ -275,4 +275,17 @@ function bar(){
 bar();
 ```
 
-## 
+## 对于扩展运算符，如下输出？
+如果在对象内展开**非复杂数据类型**，则对象会将它们（如 null undefined 1 'abc'）忽略。
+
+如果在数组内展开**非复杂数据类型**，则对象会报错。
+```js
+let ydObject = { ...null, ...undefined, ...1 };
+console.log(ydObject); // {}
+
+let ydObject1 = { ...['a', 'b'], ...2 };
+console.log(ydObject); // {0: 'a', 1: 'b'}
+
+let ydArray = [...null, ...undefined];
+console.log(ydArray); // 报错
+```
