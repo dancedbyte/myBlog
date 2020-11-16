@@ -403,11 +403,16 @@ actions.changeInfo(24);
 ```
 
 ## react-redux
+
+<img src="/img/react_5_4.png" style="width: 500px" /> 
+
 1. 我们一般会在项目应用的外层包括一层 Provider，它其实只是一个外层容器，原理是通过 react 的 Context API 来实现的。
 
    同时需要给 Provider 设置好 store，Provider 的作用就是通过配合 connect 来达到组件跨层级传递数据，那么整个项目都可以直接获取这个store。
     
 2. connect 的作用是**连接 React 组件与 Redux 中的 store**，它在我们写的组件外包了一层。它接收 store 里面的 state 和 dispatch，经过 reducer 处理后以 props 属性形式传给我们的容器组件。
+
+   **connect缓存了store tree 中 state 的状态**，通过当前 state 状态和变更前 state 状态进行比较，从而确定是否调用 this.setState() 方法触发 Connect 及其子组件的重新渲染。
 
 3. 一般 connect 接受的参数有 3 个，如下：
 

@@ -210,3 +210,108 @@ new_eval('2 + 3'); // 5
     console.log(import.meta.url);
 </script>
 ```
+
+## 在 map 中执行异步函数会如何？
+1. map 会先把执行同步操作执行完，就返回，之后再一次一次的执行异步任务。
+
+2. 执行完同步操作之后，就会返回结果，所以 map 返回的值都是 Promise。
+
+3. 所以如果想得到当前异步的结果在进行下一次循环，**可以用 for for-of 代替 map**。
+```js
+const arr = [1, 2, 3, 4, 5];
+function getData() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("data");
+    }, 1000);
+  });
+}
+
+(async () => {
+  const result = arr.map(async () => {
+    console.log("start");
+    const data = await getData();
+    console.log(data);
+    return data;
+  });
+  console.log(result);
+})();
+
+// 先输出 5 次 start -> 遍历每一项开始
+// result -> [Promise, Promise, Promise, Promise, Promise] -> 返回的结果
+// 最后输出 5 次 data -> 遍历每一项异步执行返回的结果
+```
+
+## import 原理。与 require 不同点
+1. import 原理其实就是 es6 module 原理。
+
+    ① 运用闭包，为了创建 module 的内部作用域，会调用一个包装函数，包装函数的返回值也就是 module 向外公开的 API，也就是所有 export 出去的变量.
+    ② import也就是拿到module导出变量的引用。
+
+2. 与require的不同：
+
+    ① CommonJS 模块输出的是一个值的拷贝（一旦输出一个值，即使模块内部对其做出改变，也不会影响输出值），ES6 模块输出的是值的引用（内部修改导出的变量会对引用它的产生影响）。
+    ② CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
+    ③ 所以 ES6 在 import导入是在 JS 引擎对脚步静态分析时确定，获取到的是一个只读引用。等脚本运行时，会根据这个引用去对应模块中取值。所以引用对应的值改变时，导入的值也会变化。
+
+**require**
+```js
+// a.js
+var a = 1;
+function changeA(val) {
+    a = val;
+}
+module.exports = {
+    a: a,
+    changeA: changeA,
+}
+
+// b.js
+var modA = require('./a.js');
+console.log('before', modA.a); // 输出1
+modA.changeA(2);
+console.log('after', modA.a); // 还是1
+```
+
+**es6 import**
+```js
+// a.js
+var a = 1;
+function changeA(val) {
+    a = val;
+}
+module.exports = {
+    a: a,
+    changeA: changeA,
+}
+
+// b.js
+import {a, changeA} from './a.js';
+console.log('before', a); // 输出1
+changeA(2);
+console.log('after', a); // 输出变成了2
+```
+
+## 浅比较
+在 js 中深浅比较针对的是复杂数据类型，如数组、对象。
+
+浅比较：指比较对象的**引用**是否相等。应用浅比较的是 React.pureComponent 和 React.memo()，他们会比较**前后 props 的引用地址是否一致**。
+
+在 js 中通过拓展运算符 ... 可以完成**浅拷贝**。
+```js
+const arr = [
+  {a: 1},
+];
+const brr = [...arr];
+brr[0].a = 2;
+
+// 浅拷贝 只拷贝一层。所以 arr 也跟着变了
+console.log(arr); // [{a: 2}]
+console.log(brr); // [{a: 2}]
+
+
+// 变形 1。如果直接改变 brr[0] 则不会影响 arr
+brr[0] = 2;
+console.log(arr); // [{a: 1}]
+console.log(brr); // [{a: 2}]
+```
