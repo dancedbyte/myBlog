@@ -202,7 +202,33 @@ server {
 ```
 
 ## 项目中配置
-<img src='/img/nginx_1_5.png' width=550 />
+
+### 配置 1
+<img src='/img/nginx_1_5.png' width=550 style="margin-bottom: 10px" />
+
+1. 通过 proxy_pass 代理后端具体服务地址。
+2. 如果后端接口没有统一以 api 打头，可以通过 rewrite 来去掉前缀。
+
+### 配置 2
+部署自己的项目时，用 nginx 做代理去请求前端资源，发现非常慢。虽然前端资源已经做优化了可还是很慢，发现可以在 nginx 去做压缩。
+
+如果只开启了 gzip 为 on 发现是不生效的，**必须要加上压缩的类型才可以**。**需要配置到 http 模块中**。
+
+<img src='/img/nginx_1_6.png' width=550 style="margin-bottom: 10px" />
+
+```
+# 是否开启压缩
+gzip on;
+
+# 压缩级别 1-10
+gzip_comp_level 8;
+
+# 压缩的最小范围。即大于 1kb 才开始压缩
+gzip_min_length  1024;
+
+# 进行压缩的文件类型。通过响应头中 Content-Type 字段可以看出来
+gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript application/x-httpd-php image/jpeg image/gif image/png;
+```
 
 ## 踩坑记录
 
