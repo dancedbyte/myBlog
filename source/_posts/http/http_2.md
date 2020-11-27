@@ -46,7 +46,7 @@ index_img: /img/http_2_1.jpg
 
 4. DNS解析。输入的url是字符串，机器不能识别，去dns服务器（相当于大的数据库）里查出来对应的ip，一个ip可以对应一个机房，里面有好多服务器，可以通过nginx反向代理的手段转发到不同的服务器上。
 
-5. 建立 TCP 连接，**具体可参考下文**。
+5. 建立 TCP 连接，**具体可参考 TCP 协议一文**。
 
 6. 正式发送http请求，服务端并给出响应。 响应和请求未必走同一条路径，网络是网状结构的，从区域网到目标服务器会有好多透明的路由器，透明即我们是看不见的，每个路由器都有一个自己的路由表，当想要发数据时会先去查自身的路由表，并指明下一站。数据包每走一个路由在网络上叫一跳
 
@@ -121,7 +121,7 @@ index_img: /img/http_2_1.jpg
 Expires是http1.0的规范，它的值是一个绝对时间的GMT格式的时间字符串。
 
 由于失效的时间是一个绝对时间，所以当服务器与客户端时间偏差较大时，就会导致缓存混乱。
-```js
+```
 // 当两者同时存在时，cache-control优先级更高。
 cache-control:max-age=691200
 expires:Fri, 14 Apr 2017 10:47:02 GMT
@@ -129,10 +129,10 @@ expires:Fri, 14 Apr 2017 10:47:02 GMT
 
 #### Cache-Control
 Cache-Control是在http1.1中出现的，主要是利用该字段的max-age值来进行判断，它是一个相对时间。
-```js
+```
 max-age：资源的相对有效时间，是个时间戳。
 
-no-cache：不使用本地缓存。需要使用协商缓存，然后走协商缓存那套逻辑。
+no-cache： 数据内容不能被缓存, 每次请求都重新访问服务器，若有max-age, 则缓存期间不访问服务器。
 
 no-store：直接禁止浏览器缓存数据，每次都向服务器请求新的资源。
 
@@ -158,44 +158,14 @@ private：只能被终端用户的浏览器缓存，不允许CDN等中间缓存�
 ## 浏览器中的缓存位置
 当强缓存命中或者协商缓存中服务器返回304的时候，我们直接从缓存中获取资源，那么浏览器中这些资源缓存在哪呢？
 
-1. Service Worker 离线缓存 [详细介绍](https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API)
-
-    ```
-    1. Service Worker 让 JS 运行在主线程之外，是一个后台运行的独立线程，可以在代码中启用。
-    ```
-   
-    ```js
-    // index.js
-    if ('serviceWorker' in navigator) {
-           navigator.serviceWorker.register('./sw.js').then(function () {
-               // 注册成功
-           });
-    }
-    ```
-   
-    ```js
-    // sw.js 请求拦截
-    self.addEventListener('fetch', function (e) {
-           // 如果有cache则直接返回，否则通过fetch请求
-           e.respondWith(
-               caches.match(e.request).then(function (cache) {
-                   return cache || fetch(e.request);
-               }).catch(function (err) {
-                   console.log(err);
-                   return fetch(e.request);
-               })
-           );
-    });   
-    ```
-
-2. Memory Cache 内存缓存
+1. Memory Cache 内存缓存
 
     ```
     1. 浏览器层面帮我们做的缓存，打开network可以看见有些请求的size字段会有 Memory Cache 字样。
     2. 效率上讲它是最快的，但存活时间来讲又是最短的，当渲染进程结束后，内存缓存也就不存在了。
     3. 比较大的JS、CSS文件会直接被丢进磁盘，反之丢进内存。
     ```
-3. Disk Cache 磁盘缓存
+2. Disk Cache 磁盘缓存
 
     ```
     1. 一般当资源命中强缓存时，会直接去硬盘缓存中取。
