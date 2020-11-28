@@ -2,7 +2,7 @@
 title: js中栈与队列的互相模拟实现
 tags: JavaScript
 categories: Interview
-date: 2020-09-26
+date: 2020-08-26
 index_img: /img/about_js_1.jpg
 ---
 
@@ -76,12 +76,14 @@ class Stack {
     pop() {
         const {q1, q2} = this;
 
+        // q1 为空
         if (!q1.length) {
             while (q2.length !== 1) q1.push(q2.shift());
 
             return q2.shift();
         }
 
+        // q2 为空
         if (!q2.length) {
             while (q1.length !== 1) q2.push(q1.shift());
 

@@ -169,9 +169,9 @@ en.introduce(); // ghm english
 ```
 
 ## 通用的柯里化函数
-函数柯里化，是固定部分参数，返回一个接受剩余参数的函数。
+函数柯里化，是固定部分参数，返回一个接受剩余参数的函数。目的是为了缩小适用范围，创建一个针对性更强的函数。
 
-目的是为了缩小适用范围，创建一个针对性更强的函数。
+提前把易变因素，传参固定下来，生成一个更明确的应用函数。最典型的代表应用，是bind函数用以固定this这个易变对象。
 
 **es5**
 ```js
@@ -270,7 +270,7 @@ const res = compose(add1, mul3, div2)(1); // 3
 
 ## 手写深拷贝
 
->   通过 JSON.parse(JSON.stringify(obj))、Object.assign(target, source1, source1) 可以实现浅拷贝。
+>   通过 拓展操作符、Object.assign(target, source1, source1) 可以实现浅拷贝。
 
 >   浅拷贝指：只能拷贝一层，如果改变第二层的数据，则源对象和拷贝出来的对象的值都会改变。
 
@@ -288,7 +288,7 @@ const res = compose(add1, mul3, div2)(1); // 3
 ### 拷贝数组、对象、防止循环引用
 ```js
 const deepClone = (target = {}, map = new WeakMap()) => {
-    if(typeof target !== 'object' || target == null) return target;
+    if(typeof target !== 'object' || target === null) return target;
 
     let result = target instanceof Array ? [] : {};
     
@@ -350,8 +350,8 @@ const instanceof = (A, B) => {
 ## setTimeout实现setInterval
 1. setInterval存在的问题。
 
-    1. 某些间隔会被跳过。
-    2. 多个定时器的代码执行时间可能会比预期小。
+    1. setInterval对调用的代码是否报错漠不关心。即使调用的代码报错了，它依然会持续的调用下去。
+    2. setInterval无视网络延迟，当轮询 ajax 请求时，如果网络状况差，一个请求发出，还没有返回结果，它仍会继续发送请求，最后导致的结果就是请求堆积。
 
 2. setTimeout解决的问题
 

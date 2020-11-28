@@ -10,13 +10,14 @@ index_img: /img/about_js_4.jpg
 可以设置最大请求次数，请求成功则不再请求，请求失败则继续请求，直到超过最大次数。
 
 ```js
+// 主要是在 error 里判断，实际应用中可以理解 maxCount 为重试次数，避免出现死循环
 function requestFunc(url, body, successCallback, errCallback, maxCount) {
 	return fetch(url, body)
       	.then(res => successCallback(res))
       	.catch(err => {
       		 if(maxCount <= 0) return errCallback('请求超时');
 
-        	 return requestFunc(url, body, successCallback, errCallback, --maxCount); // 每次maxCount自减
+        	  return requestFunc(url, body, successCallback, errCallback, --maxCount); // 每次maxCount自减
     	  })
 }
 

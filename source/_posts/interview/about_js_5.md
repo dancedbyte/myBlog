@@ -289,3 +289,51 @@ console.log(ydObject); // {0: 'a', 1: 'b'}
 let ydArray = [...null, ...undefined];
 console.log(ydArray); // 报错
 ```
+
+## ⽤不同⽅式对对象 A 进⾏改造
+实现当 A.name 发⽣变化时，能够⽴即执⾏ A.getName。
+
+
+```js
+// 方式 1 监听属性的 getter 和 setter 方法
+const A = {
+    name: 'sfd',
+    getName: function(){
+        console.log(this.name)
+    },
+    get name() {
+        return this.value;
+    },
+    set name(name) {
+        this.value = name;
+        this.getName();
+    }
+};
+
+A.name = 'draw'; // draw
+```
+
+```js
+// 方式 2 Proxy
+const _A = {
+    name: 'sfd',
+    getName: function () {
+        console.log(this.name)
+    }
+};
+// Proxy 的第二个参数是个对象，包含 get 和 set 两个属性方法
+const A = new Proxy(_A, {
+    // receiver 代表 proxy 实例
+    get(target, key, receiver) {
+        return Reflect.get(target, key, receiver);
+    },
+    set(target, key, value, receiver) {
+        const res = Reflect.set(target, key, value, receiver); // 先设置 才能保证 getName 拿到最新的
+
+        target.getName(); // 执行
+
+        return res;
+    }
+});
+A.name = 'draw';
+```
