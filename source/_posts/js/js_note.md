@@ -220,23 +220,21 @@ new_eval('2 + 3'); // 5
 ```js
 const arr = [1, 2, 3, 4, 5];
 function getData() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve("data");
-    }, 1000);
-  });
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve("data");
+        }, 1000);
+      });
 }
-
 (async () => {
-  const result = arr.map(async () => {
-    console.log("start");
-    const data = await getData();
-    console.log(data);
-    return data;
-  });
-  console.log(result);
+      const result = arr.map(async () => {
+        console.log("start");
+        const data = await getData();
+        console.log(data);
+        return data;
+      });
+      console.log(result);
 })();
-
 // 先输出 5 次 start -> 遍历每一项开始
 // result -> [Promise, Promise, Promise, Promise, Promise] -> 返回的结果
 // 最后输出 5 次 data -> 遍历每一项异步执行返回的结果
@@ -280,9 +278,9 @@ var a = 1;
 function changeA(val) {
     a = val;
 }
-module.exports = {
-    a: a,
-    changeA: changeA,
+export {
+    a,
+    changeA,
 }
 
 // b.js
@@ -314,4 +312,43 @@ console.log(brr); // [{a: 2}]
 brr[0] = 2;
 console.log(arr); // [{a: 1}]
 console.log(brr); // [{a: 2}]
+```
+
+## requestAnimationFrame
+需要注意的是，requestAnimationFrame会告诉浏览器你将要执行一个动画，并且要求浏览器在**下次重绘之前调用指定的回调函数更新动画**。
+
+所以如果在同一个宏任务中，如果某个 js 任务导致浏览器的重绘，根据前面的定义，在重绘前会先执行requestAnimationFrame ，即使在其之前又创建了一个 setTimeout 的宏任务，requestAnimationFrame 也会早于 setTimeout 执行。
+
+注：有的地方将 requestAnimationFrame 归类于宏任务，**但宏任务是在 UI 重绘之后执行的**，而根据 requestAnimationFrame 的定义，**它是在重绘之前执行的**，但是晚于其它微任务，只是优先级较低。
+
+```html
+<body>
+<div id="box"></div>
+<script>
+    const box = document.getElementById('box');
+
+    setTimeout(() => {
+        box.setAttribute('random', Math.random()); // 导致 重绘
+
+        requestAnimationFrame(() => {
+            console.log('requestAnimationFrame');
+        })
+    }, 1000);
+
+    setTimeout(() => {
+        console.log('宏任务');
+        // 延迟时间如果都是 1000 的话，不知道为什么就会先输出 -> 宏任务
+        // 延迟时间如果稍微比 1000 大的话。就会先输出 requestAnimationFrame
+    }, 1100); 
+
+    new Promise((resolve) => {
+        console.log('promise');
+        resolve('111')
+    }).then(res => {
+        console.log(res);
+    })
+
+    // promise、 111、 requestAnimationFrame、 宏任务
+</script>
+</body>
 ```

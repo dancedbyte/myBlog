@@ -2,7 +2,7 @@
 title: 每日一道 算法题整理
 tags: 算法
 categories: 数据结构与算法
-date: 2020-09-23
+date: 2020-08-23
 index_img: /img/leetcode.jpg
 ---
 
@@ -12,7 +12,7 @@ index_img: /img/leetcode.jpg
 let str = 'pwwkewa';
 
 const search = (s) => {
-  let i = 0;
+  let i = 0; // 记录索引
   let res = 0; // 记录最大值
   let str = ''; // 记录最长字符串
   const map = new Map();
@@ -466,13 +466,14 @@ const findMin1 = (arr) => {
   let i = 0;
   let j = arr.length - 1;
   
-  while(i < j) {
+  while(i <= j) {
     const mid = Math.floor((i + j) / 2);
     
+    // 如果中间位上的值 比 最后面的值还大，说明翻转的界限在右面。
     if(arr[mid] > arr[j]) {
       i = mid + 1;
     } else if (arr[mid] < arr[j]) {
-      j = j - 1;
+      j = mid - 1;
     } else {
       j = mid;
     }
@@ -544,16 +545,16 @@ toTree(arr);
 记得考虑 4张2 等这种情况
 ```js
 const isStraight = function (nums) {
-    let a = 0, b = 0;
+    let a = 0, b = 0; // 用 a 记录王有几张，用 b 记录中间的空缺
     nums.sort((a, b) => a - b);
     
     for (let i = 0; i < nums.length; i++) {
-        if (nums[i] == 0) {
+        if (nums[i] === 0) {
             a++;
         } else {
             if (nums[i + 1] - nums[i] > 1) {
                 b += nums[i + 1] - nums[i] - 1
-            } else if (nums[i + 1] == nums[i]){
+            } else if (nums[i + 1] === nums[i]){ // 如果两张相等 永远不可能是顺子。
                 return false;
             }
         }
@@ -669,13 +670,13 @@ const findK = (head, k) => {
 
     let i = 0;
     while (p) {
-        if (i >= k) q = q.next;
+        if (i >= k) q = q.next; // 如果 k 等于 3，这时 q 是不动的，没有进入 if 里面。
         
         p = p.next;
         i++;
     }
     
-    return i < k ? null : q;
+    return i < k ? null : q; // 只有当链表长度小于 k 时才会出现 null 的情况。
 };
 ```
 
@@ -1471,4 +1472,101 @@ const mergeToOne = (nums1, nums2) => {
 };
 const res = mergeToOne(nums1, nums2);
 console.log(res); // [1, 2, 3, 5, 5, 6, 7, 7, 9]
+```
+
+## 输入数字，找到对应字母
+输入26返回z
+输入27返回aa
+输入28返回ab
+输入53返回aaa
+
+分析：可以借助 String.fromCharCode(num + 96)，根据 unicode 得到对应的字母 a - z
+```js
+const find = (num) => {
+  if(num <= 26) return String.fromCharCode(num + 96);
+  
+  let i = 0;
+  
+  while(num > 26) {
+    i++; // 记录 a 的个数
+    num -= 26;
+  }
+  
+  return 'a'.repeat(i) + String.fromCharCode(num + 96); // 借用原生的 repeat 方法实现字符串复制
+}
+
+console.log(find(53)); // aaa
+```
+
+## 实现四则运算
+<img src="/img/leetcode_2.png" width="400" style="margin-bottom: 10px" /> 
+
+不能用 eval。可以将运算字符串转化为二叉树。
+```js
+// 构建二叉树
+function CalcNode(expr){
+    const exprArr = expr.split("");
+  	const length  = exprArr.length;
+    let index = 0; // 记录符号所在位置
+
+    this.left = null;
+    this.right = null;
+
+    if(length > 1) {
+        for(let i = length - 1; i >= 0; i--) {   
+            if(exprArr[i] === "*" || exprArr[i] === "/"){
+              index = i;
+            }else if(exprArr[i] === "+" || exprArr[i] === "-"){ // 先去找 加号或减号
+              index = i;
+              break;
+            }
+        }
+
+        const leftArr = [];
+        const rightArr = [];
+        // 这里分了两个 for 循环，区分每个节点的左右子树
+        for(let i = 0; i < index; i++){
+          leftArr.push(exprArr[i]);     
+        }
+     	  for(let i = index + 1; i < length; i++){
+		      rightArr.push(exprArr[i]);
+        }
+
+        this.left = new CalcNode(leftArr.join(""));
+        this.right = new CalcNode(rightArr.join(""));
+    }
+
+    this.value = exprArr[index]; // 是将符号作为根节点
+}
+CalcNode.prototype.calculate = function(){
+    let res = 0;
+
+    if(this.left=== null && this.right === null){
+        res = parseInt(this.value);
+    }else{
+        const leftValue = this.left.calculate();
+        const rightValue = this.right.calculate();
+
+      	// 打印二叉树可发现，this.value代表符号
+        switch(this.value){
+            case "*":
+                res += leftValue*rightValue;
+                break;
+            case "/":
+                res += leftValue/rightValue;
+                break;
+            case "+":
+                res += leftValue+rightValue;
+                break;
+            case "-":
+                res += leftValue - rightValue;
+            default:
+                break;
+        }
+    }
+
+    return res;
+}
+const cnode = new CalcNode("1+2*3+4");
+console.log(cnode.calculate()); // 11
 ```

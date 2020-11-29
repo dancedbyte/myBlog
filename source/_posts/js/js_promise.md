@@ -2,7 +2,7 @@
 title: 百变 Promise
 tags: Promise
 categories: JavaScript
-date: 2020-09-25
+date: 2020-08-26
 index_img: /img/promise.jpg
 ---
 
@@ -313,4 +313,60 @@ addTask(1000, '1');
 addTask(500, '2');
 addTask(300, '3');
 addTask(400, '4');
+```
+
+## 实现一个 repeat 方法
+调用这个 repeatFunc ("hello world")，会 alert 4次 hello world, 每次间隔 1 秒。
+
+思路分析：要想保证每次间隔 1 秒，执行指定函数，需创建一个 promise 链式调用。
+```js
+function repeat(func, times, wait) { 
+  // return 一个函数用来接收传进来的 str
+  return function(str) {
+    // 通过 setTimeout 保证间隔 1 秒
+    const req = () => {
+      // 返回 promise 确保链式调用  
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve(func(str))
+        },wait)
+      })
+    }
+    let i = 0;
+    let promise = Promise.resolve();
+    
+    // 通过 i 记录已经执行的次数
+    while(i < times) {
+      promise = promise.then(req);
+      
+      i++;
+    }
+  }
+}
+
+const repeatFunc = repeat(alert, 4, 1000);
+repeatFunc ("hello world");
+```
+
+## 实现 promisify
+处理异步操作时一般外层包一层 Promise，但是如果有很多个异步操作每个都要封装就很麻烦，可以写一个通用的封装函数。
+```js
+const fs = require('fs');
+
+function promisify(fn) {
+    return function(...args) {
+        return new Promise((resolve, reject) => {
+            args.push((err, res) => {
+                if(err) return reject(err);
+                resolve(res)
+            });
+            fn.apply(null, args);
+        })
+    }
+}
+
+const fn = promisify(fs.readFile);
+fn('./a.js').then(res => {
+    console.log(res.toString());
+});
 ```
