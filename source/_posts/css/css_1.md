@@ -314,9 +314,9 @@ a {
 
 <img src='/img/css_1_3.png' width=240 />
 
-#### css
+### css
 
-```css
+```
 /* css基本样式 */
 <style>
   * {
@@ -340,7 +340,7 @@ a {
 </style>
 ```
 
-#### html
+### html
 1. 定义 10 列的栅格，除以 31.8vmax 来限定栅格整体大小。
 2. hsla() 函数使用色相、饱和度、亮度、透明度来定义颜色。
 3. @place-cell:center; 规定以中心点作为圆心。

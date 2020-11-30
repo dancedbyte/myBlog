@@ -124,7 +124,7 @@ console.log(a); // 1
 ```js
 let a = {};
 function test(a) {
-  a.name = 'draw'; // 当（负责类型）变量 和 参数重名时，内部操作形参会对变量产生影响
+  a.name = 'draw'; // 当（复杂类型）变量 和 参数重名时，内部操作形参会对变量产生影响
 }
 test(a); // 复杂数据类型
 
