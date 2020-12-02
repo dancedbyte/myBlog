@@ -1570,3 +1570,35 @@ CalcNode.prototype.calculate = function(){
 const cnode = new CalcNode("1+2*3+4");
 console.log(cnode.calculate()); // 11
 ```
+
+## 股票最大利润
+给定的数组是按时间排序的，每位上的值代表当天的价格，求何时抛出利润最大。
+
+```js
+const arr =  [7,1,5,3,6,4]; // 6 - 1 = 5
+const arr1 = [7,6,4,3,1]; // 为 0
+
+// 定义两个指针，寻找最大和最小值。
+const find = (arr) => {
+  let left = 0;
+  let right = arr.length - 1;
+  let min = arr[left];
+  let max = arr[right];
+  
+  while(left <= right) {
+    if(arr[left] < min) {
+      min = arr[left];
+    }
+    if(arr[right] > max) {
+      max = arr[right];
+    }
+    left++;
+    right--;
+  }
+  
+  console.log(min, max);
+  
+  return max - min;
+}
+find(arr);
+```

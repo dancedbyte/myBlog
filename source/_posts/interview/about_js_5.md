@@ -206,7 +206,7 @@ new fn.getValue(); // 2
 
 import 是编译阶段就先去加载了。而 require 是运行时才去加载。
 ```js
-// index.js
+// index.js。import只能放到最顶级，且import会提上到作用域的顶部
 console.log('running index.js');
 import { sum } from './sum.js';
 console.log(sum(1, 2));

@@ -180,3 +180,47 @@ function Counter() {
     );
 }
 ```
+
+## 随笔
+
+### 实现 useSafeState
+如果在组件卸载后执行异步更新的操作，即在一个不存在的组件上进行状态更新，则会造成内存泄漏，如下代码：
+```js
+const [value, setValue] = useState({});
+
+useEffect(() => {
+    const runAsyncOperation = () => {
+        setTimeout(() => {
+            setValue({ key: 'value' }); // 1000 ms 后去做一些事，可是这时组件已经被卸载了
+        }, 1000);
+    }
+    runAsyncOperation();
+}, []); 
+```
+
+实现 useSafeState，如果组件卸载则不执行异步更新。
+```js
+import { useState, useEffect, useRef } from 'react'
+
+const useSafeState = (initialValue) => {
+    const isMountedRef = useRef(true); // 默认值给为true
+    const [currentValue, setCurrentValue] = useState(initialValue);    
+
+    useEffect(() => {
+         // 卸载
+          return () => {
+            isMountedRef.current = false;
+          }
+    }, [isMountedRef]);    
+    
+    const setSafeState = (value) => {
+          if (isMountedRef && isMountedRef.current) {
+            setCurrentValue(value);
+          }
+    }   
+    
+    return [currentValue, setSafeState];
+}
+
+export default useSafeState;
+```
