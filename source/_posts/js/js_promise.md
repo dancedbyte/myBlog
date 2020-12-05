@@ -217,6 +217,35 @@ Promise.allSettled(promises)
 */
 ```
 
+## 实现 Promise.allSettled
+通过 try-catch 捕捉错误，而不是遇到错误直接 reject。
+
+```js
+const p1 = () => Promise.resolve(111);
+const p2 = () => Promise.resolve(222);
+const p3 = () => Promise.reject(333);
+
+Promise._allSettled = async function(arr) {
+  const res = [];
+  
+  for(let i = 0; i < arr.length; i++) {
+    try {
+      const r = await arr[i]();
+      
+      res.push({status: 'fulfilled', value: r});
+    } catch (e) {
+      res.push({status: 'rejected', value: e});
+    }  
+  }
+  
+  return res;
+}
+
+Promise._allSettled([p1, p2, p3]).then(res => {
+  console.log(res, 'res');
+})
+```
+
 ## 实现允许 max 个请求并发的函数
 该函数可以批量请求数据，所有的url地址在urls参数中，同时可以通过max参数控制请求的并发度，当所有请求结束之后，需要执行callback回调函数。
 ```js

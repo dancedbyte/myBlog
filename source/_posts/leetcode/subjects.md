@@ -94,32 +94,25 @@ find(arr);
 
 '198' + '198' = '396'
 ```js
-const add = (num1, num2) => {
-  let i = num1.length;
-  let j = num2.length;
-  let area = 0;
+const add = (s1, s2) => {
+  while(s1.length < s2.length) s1 = '0' + s1;
+  while(s2.length < s1.length) s2 = '0' + s2;
+  
   let res = '';
-
-  while(i > 0 && j > 0) {
-      i--;
-      j--;
-
-      let sum = Number(num1[i]) + Number(num2[j]) + Number(area); // 当前位的值 + 上一次被累加进来的值
-
-      res = sum % 10 + res; // 当前位上的值
-
-      area = Math.floor((Number(num1[i]) + Number(num2[j])) / 10); // 向上累加的值。例如 9 + 8 = 17  area = 1
+  let area = 0; // 向上累加的值
+  
+  for(let i = 0; i < s1.length; i++) {
+    const cur = +s1[i] + +s2[i] + area;
+    
+    area = Math.floor(cur / 10);
+    res = res + cur % 10;
   }
+  
+  res = area === 1 ? '1' + res : res;
+  console.log(res);
+};
 
-  // 表示 num1 的长度大于 num2 的长度。则把 num1 前几位截取下来
-  if(i > 0) return area > 0 ? (Number(num1.slice(0, i)) + Number(area)) + res : num1.slice(0, i) + res;
-  if(j > 0) return area > 0 ? (Number(num2.slice(0, j)) + Number(area)) + res : num2.slice(0, j) + res;
-
-  return res;
-}
-
-const res = add('15', '125');
-console.log(res);
+add('125', '925');
 ```
 
 ## 字符串相乘
@@ -377,6 +370,27 @@ const showAllArrange = (arr, res, current = '', temp = '') => {
 }
 const res = showAllStr('abc');
 console.log(res);
+```
+
+## 输出数组可排列的所有结果
+```js
+function perm(arr) { 
+  const res = [];
+  
+  function fn(source, result) {  
+    if (source.length === 0) {
+      res.push(result);
+    } else {
+     	for (let i = 0; i < source.length; i++) {
+            fn(source.slice(0, i).concat(source.slice(i + 1)), result.concat(source[i]));   
+        }  
+    }	
+  }
+  
+  fn(arr, []);
+  console.log(res);
+}  
+perm([1, 2, 3]);  
 ```
 
 ## 替换空格
