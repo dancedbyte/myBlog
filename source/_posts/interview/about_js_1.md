@@ -68,7 +68,7 @@ class Stack {
         const {q1, q2} = this;
 
         if (!q1.length && !q2.length) q1.push(it);
-        if (!q1.length) q2.push(it);
+        if (!q1.length) q2.push(it); // q1 为空，则放入 q2。保持 q1 是空的。
         if (!q2.length) q1.push(it);
     }
 

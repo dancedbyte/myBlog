@@ -208,11 +208,6 @@ const arr1 = [
 const isHasNum = (matrix, target) => {
   if(!matrix.length) return false;
 
-  const singleLen = matrix[0].length;
-
-  // 小于左上角或大于右上角 则可以不用向下判断了
-  if(target < matrix[0][0] || target > matrix[matrix.length - 1][singleLen - 1]) return false;
-  
   let i = matrix.length - 1;
   let j = 0;
   const len = matrix[0].length;
