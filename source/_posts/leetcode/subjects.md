@@ -769,10 +769,10 @@ const change = (arr) => {
       if(arr[j] % 2 === 1) {
         [arr[i], arr[j]] = [arr[j], arr[i]];
       } else {
-        while(arr[j] % 2 === 0 && j > i) {
-         	j--; 
-        }
-       	[arr[i], arr[j]] = [arr[j], arr[i]]; 
+            while(arr[j] % 2 === 0 && j > i) {
+                j--; 
+            }
+       	 [arr[i], arr[j]] = [arr[j], arr[i]]; 
       }
     }
     
@@ -1049,11 +1049,11 @@ const deal = (demo) => {
         const brr = b.split('.');
         
         let i = 0;
-        while(i < arr.length && i < brr.length) {
+        while(i < arr.length || i < brr.length) {
           if(Number(arr[i]) === Number(brr[i])) {
             i++;
           } else {
-            return Number(arr[i]) - Number(brr[i]);
+            return (Number(arr[i]) || 0) - (Number(brr[i]) || 0);
           }
         }
     })
